@@ -53,7 +53,7 @@ Returns the information about the current user that is logged in.
 - Request
 
   - Method: GET
-  - URL: /api/user/current <!-- When we start the Authenticate me project, the endpoints for logging in / logging out will bein the sessions route. So you would make calls to /api/session. -->
+  - URL: /api/session <!-- When we start the Authenticate me project, the endpoints for logging in / logging out will bein the sessions route. So you would make calls to /api/session. -->
   - Body: none
 
 - Successful Response when there is a logged in user
@@ -97,7 +97,7 @@ information.
 - Request
 
   - Method: POST
-  - URL: /api/user/login <!-- Again we will have this endpoint switched to /api/session. -->
+  - URL: /api/session <!-- Again we will have this endpoint switched to /api/session. -->
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -167,7 +167,7 @@ user's information.
 - Request
 
   - Method: POST
-  - URL: /api/user/signup <!-- should just be making a post to /api/user. It seems like we are getting the conventions mixed up with an html server. Remember we are creating a json/api server. -->
+  - URL: /api/user <!-- should just be making a post to /api/user. It seems like we are getting the conventions mixed up with an html server. Remember we are creating a json/api server. -->
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -304,7 +304,7 @@ Returns all the spots owned (created) by the current user.
 - Request
 
   - Method: GET
-  - URL: /api/user/current/spots   <!-- This could work, but if you want to keep all your spot crud actions in the spot router, you could do something like this: /api/spots/current. When we set up the User Auth stuff, we will have a session object that will give us access to the current user info -->
+  - URL: /api/spots/current   <!-- This could work, but if you want to keep all your spot crud actions in the spot router, you could do something like this: /api/spots/current. When we set up the User Auth stuff, we will have a session object that will give us access to the current user info -->
   - Body: none
 
 - Successful Response
@@ -346,7 +346,7 @@ Returns the details of a spot specified by its id.
 - Request
 
   - Method: GET
-  - URL: /api/spots/:spotId/details <!-- HTML server convention, should be /api/spots/:spotId -->
+  - URL: /api/spots/:spotId <!-- HTML server convention, should be /api/spots/:spotId -->
   - Body: none
 
 - Successful Response
@@ -414,7 +414,7 @@ Creates and returns a new spot.
 - Request
 
   - Method: POST
-  - URL: /api/spots/create <!-- HTML server convention, should be /api/spots -->
+  - URL: /api/spots <!-- HTML server convention, should be /api/spots -->
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -540,7 +540,7 @@ Updates and returns an existing spot.
 - Request
 
   - Method: PUT or PATCH
-  - URL: /api/spots/:spotId/update <!-- HTML server convention, should be /api/spots/:spotId-->
+  - URL: /api/spots/:spotId <!-- HTML server convention, should be /api/spots/:spotId-->
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -669,7 +669,7 @@ Returns all the reviews written by the current user.
 - Request
 
   - Method: GET
-  - URL: /api/user/current/reviews <!-- this could work, but if you wanted to keep all review stuff in the reviews route you can do /api/reviews/current-->
+  - URL: /api/reviews/current <!-- this could work, but if you wanted to keep all review stuff in the reviews route you can do /api/reviews/current-->
   - Body: none
 
 - Successful Response
@@ -1038,7 +1038,7 @@ Return all the bookings that the current user has made.
 - Request
 
   - Method: GET
-  - URL: /api/user/current/bookings <!-- Same as mentioned above, if you want to keep booking crud actions to the booking router, you could do something like /api/bookings/current -->
+  - URL: /api/bookings/current <!-- Same as mentioned above, if you want to keep booking crud actions to the booking router, you could do something like /api/bookings/current -->
   - Body: none
 
 - Successful Response
@@ -1157,7 +1157,7 @@ Create and return a new booking from a spot specified by id.
 - Request
 
   - Method: POST
-  - URL: /api/spots/:spotId/bookings/create <!--HTML server convention, for a backend json/api server should be somthing like this: /api/spots/:spotId/bookings -->
+  - URL: /api/spots/:spotId/bookings <!--HTML server convention, for a backend json/api server should be somthing like this: /api/spots/:spotId/bookings -->
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1398,7 +1398,7 @@ Delete an existing image for a Spot.
 - Request
 
   - Method: DELETE
-  - URL: /api/spots/:spotId/spotImages/:spotImageId <!-- you could separate this to an spot-image route if you want. -->
+  - URL: /api/spotImages/:spotImageId <!-- you could separate this to an spot-image route if you want. -->
   - Body: none
 
 - Successful Response
@@ -1436,7 +1436,7 @@ Delete an existing image for a Review.
 - Request
 
   - Method: DELETE
-  - URL: /api/reviews/:reviewId/reviewImages/:reviewImageId <!-- again you can seperate it out to an image router if you want. I don't think we want to have 2 ids in our url-->
+  - URL: /api/reviewImages/:reviewImageId <!-- again you can seperate it out to an image router if you want. I don't think we want to have 2 ids in our url-->
   - Body: none
 
 - Successful Response
