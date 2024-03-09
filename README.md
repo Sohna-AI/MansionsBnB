@@ -1,10 +1,10 @@
-# `AirBnB`
+# `MansionsBnb`
 
 ## `Database Schema Design`
 
 ![db-schema]
 
-[db-schema]: ./images/AirBnb_Diagram.png
+[db-schema]: ./images/MansionsBnb_Diagram.png
 
 ## `API Documentation`
 
