@@ -2,7 +2,8 @@
 
 ## `Database Schema Design`
 
-![db-schema] (images/AirBnb_Diagram.png)
+![db-schema]
+[db-schema]: images/AirBnb_Diagram.png
 
 ## `API Documentation`
 
