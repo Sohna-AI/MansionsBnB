@@ -4,7 +4,7 @@
 
 ![db-schema]
 
-[db-schema]: ./images/MansionsBnb_Diagram.png
+[db-schema]: ./images/MansionsBnb.png
 
 ## `API Documentation`
 
