@@ -13,6 +13,10 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
+    let options = {};
+    if (process.env.NODE_ENV === 'production') {
+      options.schema = process.env.SCHEMA;
+    }
     const demo_user = [
       {
         username: 'demoUser1',
@@ -41,6 +45,10 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    let options = {};
+    if (process.env.NODE_ENV === 'production') {
+      options.schema = process.env.SCHEMA;
+    }
     await queryInterface.bulkDelete('Users', null, {});
   },
 };

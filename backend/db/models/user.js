@@ -38,10 +38,17 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       hashedPassword: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING.BINARY,
         allowNull: false,
         validate: {
           len: [60, 60],
+        },
+      },
+    },
+    {
+      defaultScope: {
+        attributes: {
+          exclude: ['email', 'hashedPassword', 'updatedAt', 'createdAt'],
         },
       },
     },
