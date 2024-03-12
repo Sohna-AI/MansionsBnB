@@ -19,14 +19,14 @@ router.post('/', async (req, res, next) => {
     },
   });
 
-  if(!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-    const error = new Error('Login failed')
+  if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
+    const error = new Error('Login failed');
     error.status = 401;
-    error.title = 'Login failed'
+    error.title = 'Login failed';
     error.errors = {
-        credential: 'The provided credentials were invalid.'
-    }
-    return next(error)
+      credential: 'The provided credentials were invalid.',
+    };
+    return next(error);
   }
 
   const safeUser = {
@@ -34,14 +34,21 @@ router.post('/', async (req, res, next) => {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    username: user.username
-  }
+    username: user.username,
+  };
 
-  setTokenCookie(res, safeUser)
-  
+  await setTokenCookie(res, safeUser);
+
   return res.json({
-    user: safeUser
-  })
+    user: safeUser,
+  });
+});
+
+router.delete('/', (_req, res) => {
+  res.clearCookie('token');
+  return res.json({
+    message: 'success',
+  });
 });
 
 module.exports = router;
