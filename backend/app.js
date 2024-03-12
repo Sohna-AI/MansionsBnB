@@ -9,6 +9,7 @@ const { ValidationError } = require('sequelize');
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
+const routes = require('./routes');
 
 const app = express();
 app.use(morgan('dev'));
@@ -33,6 +34,16 @@ app.use(
   })
 );
 
+app.use(routes);
+
+app.use((_req, _res, next) => {
+  const err = new Error("The requested resource couldn't be found.");
+  err.title = 'Resource Not Found';
+  err.errors = { message: "The requested resource couldn't be found." };
+  err.status = 404;
+  next(err);
+});
+
 app.use((err, _req, _res, next) => {
   if (err instanceof ValidationError) {
     let errors = {};
@@ -42,14 +53,6 @@ app.use((err, _req, _res, next) => {
     err.title = 'Validation error';
     err.errors = errors;
   }
-  next(err);
-});
-
-app.use((_req, _res, next) => {
-  const err = new Error("The requested resource couldn't be found.");
-  err.title = 'Resource Not Found';
-  err.errors = { message: "The requested resource couldn't be found." };
-  err.status = 404;
   next(err);
 });
 
@@ -63,8 +66,5 @@ app.use((err, _req, res, _next) => {
     stack: isProduction ? null : err.stack,
   });
 });
-
-const routes = require('./routes');
-app.use(routes);
 
 module.exports = app;
