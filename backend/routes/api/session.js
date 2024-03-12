@@ -46,9 +46,10 @@ router.post('/', async (req, res, next) => {
 
 router.delete('/', (_req, res) => {
   res.clearCookie('token');
-  return res.json({
+  const success = {
     message: 'success',
-  });
+  };
+  return res.json(success);
 });
 
 module.exports = router;
