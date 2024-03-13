@@ -52,6 +52,9 @@ app.use((err, _req, _res, next) => {
     }
     err.title = 'Validation error';
     err.errors = errors;
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      err.status = 500;
+    } else err.status = 400;
   }
   next(err);
 });
