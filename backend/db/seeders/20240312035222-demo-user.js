@@ -1,6 +1,12 @@
 'use strict';
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
+options.validate = true;
+options.tableName = 'Users';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -38,8 +44,7 @@ module.exports = {
         hashedPassword: bcrypt.hashSync('password3'),
       },
     ];
-
-    await User.bulkCreate(demo_users, { validate: true });
+    await User.bulkCreate(demo_users, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -50,6 +55,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    await queryInterface.bulkDelete('Users', null, {});
+    await queryInterface.bulkDelete(options, null, {});
   },
 };
