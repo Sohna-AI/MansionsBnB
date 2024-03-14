@@ -1,44 +1,51 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class spotImage extends Model {
+  class Booking extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      spotImage.belongsTo(models.Spot);
+      Booking.belongsTo(models.Spot);
+      Booking.belongsTo(models.User);
     }
   }
-  spotImage.init(
+  Booking.init(
     {
-      url: {
-        type: DataTypes.STRING,
+      spotId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           notNull: true,
         },
       },
-      spotId: {
+      userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      preview: {
-        type: DataTypes.BOOLEAN,
+      startDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
         validate: {
-          isBoolean(value) {
-            if (typeof value !== 'boolean') {
-              throw new Error('Can only be True or False');
-            }
-          },
+          notNull: true,
+          isDate: true,
+        },
+      },
+      endDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notNull: true,
+          isDate: true,
         },
       },
     },
     {
       sequelize,
-      modelName: 'spotImage',
+      modelName: 'Booking',
     }
   );
-  return spotImage;
+  return Booking;
 };
