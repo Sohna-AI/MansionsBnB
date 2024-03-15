@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { User, Spot, Review, spotImage, sequelize } = require('../../db/models');
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(':memory:');
 const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
 const { handleValidationErrors } = require('../../utils/validation');
-const { stdout, stderr } = require('process');
 
 router.get('/', async (req, res) => {
   const spots = await Spot.findAll({
@@ -234,7 +231,6 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
       error: 'Authorization required: Only the owner can edit the spot',
     });
   }
-  // await sequelize.query(`ALTER TABLE Spots DROP CONSTRAINT owner_id_constraint`);
   await spot.destroy();
   res.status(200).json({
     message: 'Successful deletion',
