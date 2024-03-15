@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { Spot } = require('../../db/models');
+const { User, Spot, Review, spotImage, sequelize } = require('../../db/models');
 const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
 const { handleValidationErrors } = require('../../utils/validation');
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
   const spots = await Spot.findAll({
     attributes: [
       'id',
@@ -21,9 +21,22 @@ router.get('/', async (_req, res) => {
       'price',
       'createdAt',
       'updatedAt',
+      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
     ],
+    include: [
+      {
+        model: Review,
+        attributes: [],
+      },
+      {
+        model: spotImage,
+        attributes: ['url'],
+        where: { preview: true },
+        required: false,
+      },
+    ],
+    group: ['Spot.id'],
   });
-
   res.json(spots);
 });
 
@@ -67,6 +80,117 @@ router.post('/', validateSpot, requireAuth, async (req, res) => {
   });
 
   res.status(201).json(newSpot);
+});
+
+const validSpotImage = [
+  check('url').notEmpty().withMessage('Must link an image'),
+  check('preview').isBoolean().withMessage('Must be true or false'),
+  handleValidationErrors,
+];
+
+router.post('/:spotId/spotImages', validSpotImage, requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+  const { url, preview } = req.body;
+
+  const spot = await Spot.findOne({
+    where: {
+      id: spotId,
+    },
+  });
+
+  if (!spot) {
+    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+  }
+
+  if (req.user.id !== spot.ownerId) {
+    res.status(403).json({
+      error: 'Unauthorized: Only owner can add an image',
+    });
+  }
+  const newImage = await spotImage.create({
+    spotId: spotId,
+    url: url,
+    preview: preview,
+  });
+
+  res.status(201).json(newImage);
+});
+
+router.get('/current', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId);
+  const spot = await Spot.findAll({
+    attributes: [
+      'id',
+      'ownerId',
+      'address',
+      'city',
+      'state',
+      'country',
+      'lat',
+      'lng',
+      'name',
+      'description',
+      'price',
+      'createdAt',
+      'updatedAt',
+      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
+    ],
+    where: {
+      ownerId: userId,
+    },
+    include: [
+      {
+        model: spotImage,
+        attributes: ['url'],
+        where: {
+          preview: true,
+        },
+        as: 'previewImage',
+      },
+    ],
+  });
+
+  res.status(200).json(spot);
+});
+
+router.get('/:spotId', async (req, res) => {
+  const { spotId } = req.params;
+
+  const spot = await Spot.findByPk(spotId, {
+    attributes: [
+      'id',
+      'ownerId',
+      'address',
+      'city',
+      'state',
+      'country',
+      'lat',
+      'lng',
+      'name',
+      'description',
+      'price',
+      'createdAt',
+      'updatedAt',
+      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
+      [sequelize.literal('(SELECT COUNT(*) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'numReviews'],
+    ],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+      {
+        model: spotImage,
+        attributes: ['id', 'url', 'preview'],
+        as: 'spotImages',
+      },
+    ],
+  });
+  if (!spot) {
+    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+  }
+  res.status(200).json(spot);
 });
 
 module.exports = router;
