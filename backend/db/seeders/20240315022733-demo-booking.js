@@ -1,5 +1,11 @@
 'use strict';
 const { Booking } = require('../models');
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
+options.validate = true;
+options.tableName = 'Bookings';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -33,7 +39,7 @@ module.exports = {
       },
     ];
 
-    await Booking.bulkCreate(demo_booking, { validate: true });
+    await Booking.bulkCreate(demo_booking, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -44,6 +50,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    await queryInterface.bulkDelete('Bookings', null, {});
+    await queryInterface.bulkDelete(options, null, {});
   },
 };

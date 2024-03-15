@@ -1,5 +1,11 @@
 'use strict';
 const { Spot } = require('../models');
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
+options.validate = true;
+options.tableName = 'Spots';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -54,7 +60,7 @@ module.exports = {
       },
     ];
 
-    await Spot.bulkCreate(demo_spots, { validate: true });
+    await Spot.bulkCreate(demo_spots, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -64,6 +70,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Spots', null, {});
+    await queryInterface.bulkDelete(options, null, {});
   },
 };

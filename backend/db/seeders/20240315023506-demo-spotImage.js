@@ -1,4 +1,10 @@
 'use strict';
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
+options.validate = true;
+options.tableName = 'spotImages';
 const { spotImage } = require('../models');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -29,7 +35,7 @@ module.exports = {
         preview: true,
       },
     ];
-    await spotImage.bulkCreate(demo_spotImage, { validate: true });
+    await spotImage.bulkCreate(demo_spotImage, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -39,6 +45,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('spotImages', null, {});
+    await queryInterface.bulkDelete(options, null, {});
   },
 };
