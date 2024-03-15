@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
         model: spotImage,
         attributes: ['url'],
         where: { preview: true },
+        as: 'previewImage',
         required: false,
       },
     ],
@@ -118,7 +119,7 @@ router.post('/:spotId/spotImages', validSpotImage, requireAuth, async (req, res)
 
 router.get('/current', requireAuth, async (req, res) => {
   const userId = req.user.id;
-  console.log(userId);
+
   const spot = await Spot.findAll({
     attributes: [
       'id',
@@ -193,4 +194,47 @@ router.get('/:spotId', async (req, res) => {
   res.status(200).json(spot);
 });
 
+router.put('/:spotId', requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+  const spot = await Spot.findByPk(spotId);
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+  if (!spot) {
+    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+  }
+  if (req.user.id !== spot.ownerId) {
+    res.status(403).json({
+      error: 'Authorization required: Only the owner can edit the spot',
+    });
+  }
+  if (address) spot.address = address;
+  if (city) spot.city = city;
+  if (state) spot.state = state;
+  if (country) spot.country = country;
+  if (lat) spot.lat = lat;
+  if (lng) spot.lng = lng;
+  if (description) spot.description = description;
+  if (price) spot.price = price;
+  await spot.save();
+
+  res.status(200).json(spot);
+});
+
+router.delete('/:spotId', requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+  const spot = await Spot.findByPk(spotId);
+  if (!spot) {
+    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+  }
+
+  if (req.user.id !== spot.ownerId) {
+    res.status(403).json({
+      error: 'Authorization required: Only the owner can edit the spot',
+    });
+  }
+
+  await spot.destroy();
+  res.status(200).json({
+    message: 'Successful deletion',
+  });
+});
 module.exports = router;

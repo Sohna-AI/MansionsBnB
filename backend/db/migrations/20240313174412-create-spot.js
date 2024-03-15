@@ -16,9 +16,10 @@ module.exports = {
           model: 'Users',
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       address: {
-        type: Sequelize.STRING(30),
+        type: Sequelize.STRING(50),
         allowNull: false,
       },
       city: {
@@ -30,7 +31,7 @@ module.exports = {
         allowNull: false,
       },
       country: {
-        type: Sequelize.STRING(15),
+        type: Sequelize.STRING(30),
         allowNull: false,
       },
       lat: {

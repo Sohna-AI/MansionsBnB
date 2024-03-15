@@ -75,16 +75,15 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           notEmpty: true,
-          len: [2, 15],
+          len: [2, 30],
         },
       },
       lat: {
-        type: DataTypes.DECIMAL(9, 7),
+        type: DataTypes.DECIMAL(10, 7),
         allowNull: false,
         validate: {
           notNull: true,
           isDecimal: true,
-          len: [1, 9],
           min: -90,
           max: 90,
         },
@@ -95,9 +94,8 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           isDecimal: true,
-          len: [1, 10],
-          min: -180,
-          max: 180,
+          min: -180.0,
+          max: 180.0,
         },
       },
       name: {
