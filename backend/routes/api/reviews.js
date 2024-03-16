@@ -68,22 +68,23 @@ router.post('/:reviewId/reviewImages', validImage, requireAuth, async (req, res)
       reviewId: reviewId,
     },
   });
-  console.log(imageCount);
+
   const maxImage = 10;
   if (imageCount === maxImage) {
     return res.status(403).json({
       message: 'Maximum number of images for this resource was reached',
     });
   }
-
-  const newImage = await reviewImage.create({
-    url: url,
-    reviewId: reviewId,
-  });
-  res.status(201).json({
-    id: newImage.id,
-    url: newImage.url,
-  });
+  if (imageCount < 10) {
+    const newImage = await reviewImage.create({
+      url: url,
+      reviewId: reviewId,
+    });
+    res.status(201).json({
+      id: newImage.id,
+      url: newImage.url,
+    });
+  }
 });
 
 const validReview = [
