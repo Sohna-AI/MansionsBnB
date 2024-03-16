@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Spot, Review, spotImage, sequelize } = require('../../db/models');
+const { User, Spot, Review, reviewImage, spotImage, sequelize } = require('../../db/models');
 const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -100,11 +100,11 @@ router.post('/:spotId/spotImages', validSpotImage, requireAuth, async (req, res)
   });
 
   if (!spot) {
-    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+    return res.status(404).json({ error: `Spot not found for id ${spotId}` });
   }
 
   if (req.user.id !== spot.ownerId) {
-    res.status(403).json({
+    return res.status(403).json({
       error: 'Unauthorized: Only owner can add an image',
     });
   }
@@ -189,7 +189,7 @@ router.get('/:spotId', async (req, res) => {
     ],
   });
   if (!spot) {
-    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+    return res.status(404).json({ error: "Spot couldn't be found" });
   }
   res.status(200).json(spot);
 });
@@ -199,10 +199,10 @@ router.put('/:spotId', requireAuth, async (req, res) => {
   const spot = await Spot.findByPk(spotId);
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   if (!spot) {
-    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+    return res.status(404).json({ error: "Spot couldn't be found" });
   }
   if (req.user.id !== spot.ownerId) {
-    res.status(403).json({
+    return res.status(403).json({
       error: 'Authorization required: Only the owner can edit the spot',
     });
   }
@@ -223,11 +223,11 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const spot = await Spot.findByPk(spotId);
   if (!spot) {
-    res.status(404).json({ error: `Spot not found for id ${spotId}` });
+    return res.status(404).json({ error: "Spot couldn't be found" });
   }
 
   if (req.user.id !== spot.ownerId) {
-    res.status(403).json({
+    return res.status(403).json({
       error: 'Authorization required: Only the owner can edit the spot',
     });
   }
@@ -235,5 +235,72 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
   res.status(200).json({
     message: 'Successful deletion',
   });
+});
+
+router.get('/:spotId/reviews', async (req, res) => {
+  const { spotId } = req.params;
+  const spot = await Spot.findByPk(spotId);
+  if (!spot) {
+    return res.status(404).json({ error: "Spot couldn't be found" });
+  }
+  const review = await Review.findAll({
+    where: {
+      spotId: spotId,
+    },
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+      {
+        model: reviewImage,
+        attributes: ['id', 'url'],
+      },
+    ],
+  });
+
+  res.status(200).json(review);
+});
+
+const validReview = [
+  check('review').notEmpty().withMessage('Review must not be empty'),
+  check('stars')
+    .exists()
+    .withMessage('Star rating is required')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Star rating can ONLY be between 1 - 5'),
+  handleValidationErrors,
+];
+router.post('/:spotId/reviews', validReview, requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+  const userId = req.user.id;
+  const spot = await Spot.findByPk(spotId);
+  if (!spot) {
+    return res.status(404).json({ error: "Spot couldn't be found" });
+  }
+
+  const findReview = await Review.findOne({
+    where: {
+      userId: userId,
+      spotId: spotId,
+    },
+  });
+
+  if (findReview) {
+    return res.status(403).json({
+      message: 'User already has a review for this spot',
+    });
+  }
+
+  const { review, stars } = req.body;
+
+  const newReview = await Review.create({
+    review: review,
+    stars: stars,
+    userId: userId,
+    spotId: spotId,
+  });
+
+  return res.status(201).json(newReview);
 });
 module.exports = router;
