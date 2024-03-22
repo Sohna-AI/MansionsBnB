@@ -1,9 +1,9 @@
 'use strict';
-let options = {};
+let tableName = 'Spots';
+
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;
+  tableName = process.env.SCHEMA ? `${process.env.SCHEMA}.${tableName}` : tableName;
 }
-options.tableName = 'Spots';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -13,7 +13,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addConstraint(options.tableName, {
+    await queryInterface.addConstraint(tableName, {
       type: 'foreign key',
       fields: ['ownerId'],
       name: 'owner_id_constraint',
@@ -32,6 +32,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint(options.tableName, 'owner_id_constraint');
+    await queryInterface.removeConstraint(tableName, 'owner_id_constraint');
   },
 };
