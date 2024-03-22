@@ -1,12 +1,11 @@
 'use strict';
-const { User } = require('../models');
-const bcrypt = require('bcryptjs');
+const { Review } = require('../models');
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 options.validate = true;
-options.tableName = 'Users';
+options.tableName = 'Reviews';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -20,30 +19,28 @@ module.exports = {
      * }], {});
      */
 
-    const demo_users = [
+    const demo_reviews = [
       {
-        firstName: 'Demo1',
-        lastName: 'User1',
-        email: 'demo@user.io',
-        username: 'Demo-lition',
-        hashedPassword: bcrypt.hashSync('password'),
+        userId: 1,
+        spotId: 1,
+        review: 'Spot is amazing!',
+        stars: 5,
       },
       {
-        firstName: 'Demo2',
-        lastName: 'User2',
-        email: 'user1@user.io',
-        username: 'FakeUser1',
-        hashedPassword: bcrypt.hashSync('password2'),
+        userId: 2,
+        spotId: 2,
+        review: 'Great spot with alot to do',
+        stars: 4,
       },
       {
-        firstName: 'Demo3',
-        lastName: 'User3',
-        email: 'user2@user.io',
-        username: 'FakeUser2',
-        hashedPassword: bcrypt.hashSync('password3'),
+        userId: 3,
+        spotId: 3,
+        review: 'Loved the idea and how clean it was',
+        stars: 3,
       },
     ];
-    await User.bulkCreate(demo_users, options);
+
+    await Review.bulkCreate(demo_reviews, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -53,7 +50,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-
     await queryInterface.bulkDelete(options, null, {});
   },
 };

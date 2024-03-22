@@ -1,12 +1,11 @@
 'use strict';
-const { User } = require('../models');
-const bcrypt = require('bcryptjs');
+const { Booking } = require('../models');
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 options.validate = true;
-options.tableName = 'Users';
+options.tableName = 'Bookings';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -19,31 +18,28 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-
-    const demo_users = [
+    const demo_booking = [
       {
-        firstName: 'Demo1',
-        lastName: 'User1',
-        email: 'demo@user.io',
-        username: 'Demo-lition',
-        hashedPassword: bcrypt.hashSync('password'),
+        spotId: 1,
+        userId: 1,
+        startDate: '2024-10-16',
+        endDate: '2024-11-16',
       },
       {
-        firstName: 'Demo2',
-        lastName: 'User2',
-        email: 'user1@user.io',
-        username: 'FakeUser1',
-        hashedPassword: bcrypt.hashSync('password2'),
+        spotId: 2,
+        userId: 3,
+        startDate: '2024-12-16',
+        endDate: '2024-12-27',
       },
       {
-        firstName: 'Demo3',
-        lastName: 'User3',
-        email: 'user2@user.io',
-        username: 'FakeUser2',
-        hashedPassword: bcrypt.hashSync('password3'),
+        spotId: 3,
+        userId: 2,
+        startDate: '2024-09-10',
+        endDate: '2024-11-05',
       },
     ];
-    await User.bulkCreate(demo_users, options);
+
+    await Booking.bulkCreate(demo_booking, options);
   },
 
   async down(queryInterface, Sequelize) {
