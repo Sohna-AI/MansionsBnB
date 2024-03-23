@@ -7,11 +7,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { Op } = require('sequelize');
 
 router.get('/', async (_req, res) => {
-  const avgStars = await Review.findAll({
-    attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']],
-    raw: true,
-  });
-
   const spots = await Spot.findAll({
     attributes: [
       'id',
@@ -42,12 +37,9 @@ router.get('/', async (_req, res) => {
         required: false,
       },
     ],
-    group: ['Spot.id'],
+    group: ['Spot.id', 'previewImage.id'],
   });
-  spots.forEach((spot) => {
-    const avgRatingObject = avgStars[0];
-    spot.avgRating = avgRatingObject ? avgRatingObject.avgRating : null;
-  });
+
   res.json(spots);
 });
 
