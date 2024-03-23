@@ -144,6 +144,10 @@ router.get('/current', requireAuth, async (req, res) => {
     },
     include: [
       {
+        model: Review,
+        attributes: [],
+      },
+      {
         model: spotImage,
         attributes: ['url'],
         where: {
