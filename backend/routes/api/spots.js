@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { User, Spot, Review, Booking, reviewImage, spotImage, sequelize } = require('../../db/models');
+const { User, Spot, Review, Booking, reviewImage, spotImage, Sequelize } = require('../../db/models');
 const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
 const { handleValidationErrors } = require('../../utils/validation');
 const { Op } = require('sequelize');
 
 router.get('/', async (_req, res) => {
+  const avgStars = await Review.findAll({
+    attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']],
+    raw: true,
+  });
+
   const spots = await Spot.findAll({
     attributes: [
       'id',
@@ -22,9 +27,13 @@ router.get('/', async (_req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
+      [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgRating'],
     ],
     include: [
+      {
+        model: Review,
+        attributes: [],
+      },
       {
         model: spotImage,
         attributes: ['url'],
@@ -34,6 +43,10 @@ router.get('/', async (_req, res) => {
       },
     ],
     group: ['Spot.id'],
+  });
+  spots.forEach((spot) => {
+    const avgRatingObject = avgStars[0];
+    spot.avgRating = avgRatingObject ? avgRatingObject.avgRating : null;
   });
   res.json(spots);
 });
