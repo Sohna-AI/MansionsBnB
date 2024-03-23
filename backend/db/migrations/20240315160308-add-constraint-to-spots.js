@@ -1,14 +1,4 @@
 'use strict';
-// const Sequelize = require('sequelize');
-// let tableName = 'Spots';
-// let usersTableName = 'Users';
-
-// if (process.env.NODE_ENV === 'production') {
-//   tableName = process.env.SCHEMA ? `${process.env.SCHEMA}.${tableName}` : tableName;
-//   usersTableName = process.env.SCHEMA
-//     ? `${Sequelize.literal(process.env.SCHEMA)}.${usersTableName}`
-//     : usersTableName;
-// }
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
@@ -25,7 +15,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.addConstraint(
-      options.tableName,
+      options,
       {
         type: 'foreign key',
         fields: options.fields,
@@ -47,6 +37,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint(options.tableName, 'owner_id_constraint');
+    await queryInterface.removeConstraint(options, 'owner_id_constraint');
   },
 };
