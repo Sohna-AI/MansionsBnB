@@ -4,7 +4,7 @@ let usersTableName = 'Users';
 
 if (process.env.NODE_ENV === 'production') {
   tableName = process.env.SCHEMA ? `${process.env.SCHEMA}.${tableName}` : tableName;
-  usersTableName = process.env.SCHEMA ? `${process.env.SCHEMA}.${usersTableName}` : usersTableName;
+  usersTableName = process.env.SCHEMA ? process.env.SCHEMA + usersTableName : usersTableName;
 }
 
 /** @type {import('sequelize-cli').Migration} */
