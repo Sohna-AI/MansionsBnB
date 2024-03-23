@@ -187,6 +187,8 @@ router.get('/:spotId', async (req, res) => {
       {
         model: Review,
         attributes: [],
+        duplicating: false,
+        required: false,
       },
       {
         model: User,
