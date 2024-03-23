@@ -1,4 +1,10 @@
 'use strict';
+let options = {};
+options.tableName = 'Reviews';
+
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,20 +15,18 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addConstraint('Reviews', {
-      type: 'foreign key',
-      fields: ['userId'],
-      name: 'user_id_review_constraint',
+    await queryInterface.changeColumn(options, 'userId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
       references: {
         table: 'Users',
         field: 'id',
       },
       onDelete: 'CASCADE',
     });
-    await queryInterface.addConstraint('Reviews', {
-      type: 'foreign key',
-      fields: ['spotId'],
-      name: 'spot_id_review_constraint',
+    await queryInterface.changeColumn(options, 'spotId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
       references: {
         table: 'Spots',
         field: 'id',
@@ -38,7 +42,13 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint('Reviews', 'user_id_review_constraint');
-    await queryInterface.removeConstraint('Reviews', 'spot_id_review_constraint');
+    await queryInterface.changeColumn(options, 'userId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    });
+    await queryInterface.changeColumn(options, 'spotId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    });
   },
 };

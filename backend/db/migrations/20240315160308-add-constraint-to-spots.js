@@ -1,10 +1,11 @@
 'use strict';
 let options = {};
+options.tableName = 'Spots';
+
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
-options.fields = ['OwnerId'];
-options.tableName = 'Spots';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -14,20 +15,15 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addConstraint(
-      options,
-      {
-        type: 'foreign key',
-        fields: options.fields,
-        name: 'owner_id_constraint',
-        references: {
-          table: 'Users',
-          field: 'id',
-        },
-        onDelete: 'CASCADE',
+    await queryInterface.changeColumn(options, 'ownerId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'Users',
+        field: 'id',
       },
-      options
-    );
+      onDelete: 'CASCADE',
+    });
   },
 
   async down(queryInterface, Sequelize) {
@@ -37,6 +33,9 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint(options, 'owner_id_constraint');
+    await queryInterface.changeColumn(options, 'ownerId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    });
   },
 };
