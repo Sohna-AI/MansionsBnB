@@ -1,15 +1,18 @@
 'use strict';
-const Sequelize = require('sequelize');
-let tableName = 'Spots';
-let usersTableName = 'Users';
+// const Sequelize = require('sequelize');
+// let tableName = 'Spots';
+// let usersTableName = 'Users';
 
+// if (process.env.NODE_ENV === 'production') {
+//   tableName = process.env.SCHEMA ? `${process.env.SCHEMA}.${tableName}` : tableName;
+//   usersTableName = process.env.SCHEMA
+//     ? `${Sequelize.literal(process.env.SCHEMA)}.${usersTableName}`
+//     : usersTableName;
+// }
+let options = {};
 if (process.env.NODE_ENV === 'production') {
-  tableName = process.env.SCHEMA ? `${process.env.SCHEMA}.${tableName}` : tableName;
-  usersTableName = process.env.SCHEMA
-    ? `${Sequelize.literal(process.env.SCHEMA)}.${usersTableName}`
-    : usersTableName;
+  options.schema = process.env.SCHEMA;
 }
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -19,16 +22,20 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addConstraint(tableName, {
-      type: 'foreign key',
-      fields: ['ownerId'],
-      name: 'owner_id_constraint',
-      references: {
-        table: usersTableName,
-        field: 'id',
+    await queryInterface.addConstraint(
+      options,
+      'ownerId',
+      {
+        type: 'foreign key',
+        name: 'owner_id_constraint',
+        references: {
+          table: 'Users',
+          field: 'id',
+        },
+        onDelete: 'CASCADE',
       },
-      onDelete: 'CASCADE',
-    });
+      options
+    );
   },
 
   async down(queryInterface, Sequelize) {
@@ -38,6 +45,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint(tableName, 'owner_id_constraint');
+    await queryInterface.removeConstraint(options, 'ownerId', 'owner_id_constraint');
   },
 };
