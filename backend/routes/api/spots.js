@@ -5,7 +5,7 @@ const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
 const { handleValidationErrors } = require('../../utils/validation');
 
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   const spots = await Spot.findAll({
     attributes: [
       'id',
