@@ -25,10 +25,6 @@ router.get('/', async (_req, res) => {
     ],
     include: [
       {
-        model: Review,
-        attributes: [],
-      },
-      {
         model: spotImage,
         attributes: ['url'],
         where: { preview: true },
