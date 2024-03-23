@@ -226,6 +226,7 @@ router.put('/:spotId', requireAuth, async (req, res) => {
   if (country) spot.country = country;
   if (lat) spot.lat = lat;
   if (lng) spot.lng = lng;
+  if (name) spot.name = name;
   if (description) spot.description = description;
   if (price) spot.price = price;
   await spot.save();
