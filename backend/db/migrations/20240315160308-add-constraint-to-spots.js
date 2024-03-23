@@ -1,4 +1,5 @@
 'use strict';
+const Sequelize = require('sequelize');
 let tableName = 'Spots';
 let usersTableName = 'Users';
 
