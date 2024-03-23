@@ -13,7 +13,7 @@ let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
-options.fields = 'OwnerId';
+options.fields = ['OwnerId'];
 options.tableName = 'Spots';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.addConstraint(
-      options,
+      options.tableName,
       {
         type: 'foreign key',
         fields: options.fields,
@@ -47,6 +47,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint(options, 'owner_id_constraint');
+    await queryInterface.removeConstraint(options.tableName, 'owner_id_constraint');
   },
 };
