@@ -156,6 +156,7 @@ router.get('/current', requireAuth, async (req, res) => {
         as: 'previewImage',
       },
     ],
+    GROUP: ['Spot.id'],
   });
 
   res.status(200).json(spot);
