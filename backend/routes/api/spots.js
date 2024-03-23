@@ -22,7 +22,7 @@ router.get('/', async (_req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgRating'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
     ],
     include: [
       {
@@ -137,7 +137,7 @@ router.get('/current', requireAuth, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
     ],
     where: {
       ownerId: userId,
@@ -175,8 +175,8 @@ router.get('/:spotId', async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
-      [sequelize.literal('(SELECT COUNT(*) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'numReviews'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
+      [Sequelize.fn('COUNT', Sequelize.col('reviews.id')), 'numReviews'],
     ],
     include: [
       {
