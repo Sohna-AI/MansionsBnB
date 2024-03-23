@@ -156,7 +156,7 @@ router.get('/current', requireAuth, async (req, res) => {
         as: 'previewImage',
       },
     ],
-    group: ['Spot.id'],
+    group: ['Spot.id', 'previewImage.id'],
   });
 
   res.status(200).json(spot);
@@ -185,6 +185,10 @@ router.get('/:spotId', async (req, res) => {
     ],
     include: [
       {
+        model: Review,
+        attributes: [],
+      },
+      {
         model: User,
         attributes: ['id', 'firstName', 'lastName'],
       },
@@ -194,6 +198,7 @@ router.get('/:spotId', async (req, res) => {
         as: 'spotImages',
       },
     ],
+    group: ['Spot.id', 'spotImages.id'],
   });
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
