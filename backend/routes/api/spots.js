@@ -200,7 +200,7 @@ router.get('/:spotId', async (req, res) => {
         as: 'spotImages',
       },
     ],
-    group: ['Spot.id', 'spotImages.id'],
+    group: ['Spot.id', 'spotImages.id', 'User.id'],
   });
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
