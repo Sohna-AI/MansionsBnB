@@ -87,14 +87,20 @@ const validateBooking = [
 ];
 
 const validateQueryParams = [
-  check('page').optional().isInt({ min: 1, max: 10 }).withMessage('Page must be a integer between 1 and 10'),
-  check('size').optional().isInt({ min: 1, max: 20 }).withMessage('Size must be an integer between 1 and 20'),
+  check('page').optional().isInt({ min: 1, max: 10 }).withMessage('Page must be greater than or equal to 1'),
+  check('size').optional().isInt({ min: 1, max: 20 }).withMessage('Size must be greater than or equal to 1'),
   check('minLat').optional().isFloat().withMessage('Minimum latitude is invalid'),
   check('maxLat').optional().isFloat().withMessage('Maximum latitude is invalid'),
   check('minLng').optional().isFloat().withMessage('Minimum longitude is invalid'),
   check('maxLng').optional().isFloat().withMessage('Maximum longitude is invalid'),
-  check('minPrice').optional().isFloat({ min: 0 }).withMessage('Minimum price must be a non-negative number'),
-  check('maxPrice').optional().isFloat({ min: 0 }).withMessage('Maximum price must be a non-negative number'),
+  check('minPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Minimum price must be greater than or equal to 0'),
+  check('maxPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Maximum price must be greater than or equal to 0'),
   handleValidationErrors,
 ];
 module.exports = {
