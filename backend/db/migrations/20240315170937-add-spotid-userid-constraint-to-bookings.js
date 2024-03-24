@@ -1,5 +1,10 @@
 'use strict';
+let options = {};
+options.tableName = 'Bookings';
 
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -9,22 +14,20 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addConstraint('Bookings', {
-      type: 'foreign key',
-      fields: ['spotId'],
-      name: 'spot_id_bookings_constraint',
+    await queryInterface.changeColumn(options, 'spotId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
       references: {
-        table: 'Spots',
+        model: 'Spots',
         field: 'id',
       },
       onDelete: 'CASCADE',
     });
-    await queryInterface.addConstraint('Bookings', {
-      type: 'foreign key',
-      fields: ['userId'],
-      name: 'user_id_bookings_constraint',
+    await queryInterface.changeColumn(options, 'userId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
       references: {
-        table: 'Users',
+        model: 'Users',
         field: 'id',
       },
       onDelete: 'CASCADE',
@@ -38,7 +41,13 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint('Bookings', 'spot_id_bookings_constraint');
-    await queryInterface.removeConstraint('Bookings', 'user_id_bookings_constraint');
+    await queryInterface.changeColumn(options, 'userId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    });
+    await queryInterface.changeColumn(options, 'spotId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    });
   },
 };

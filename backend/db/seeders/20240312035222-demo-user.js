@@ -43,7 +43,6 @@ module.exports = {
         hashedPassword: bcrypt.hashSync('password3'),
       },
     ];
-
     await User.bulkCreate(demo_users, options);
   },
 

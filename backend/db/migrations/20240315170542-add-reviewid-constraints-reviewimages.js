@@ -1,4 +1,10 @@
 'use strict';
+let options = {};
+options.tableName = 'reviewImages';
+
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,12 +15,11 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addConstraint('reviewImages', {
-      type: 'foreign key',
-      fields: ['reviewId'],
-      name: 'review_id_reviewimage_constraint',
+    await queryInterface.changeColumn(options, 'reviewId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
       references: {
-        table: 'Reviews',
+        model: 'Reviews',
         field: 'id',
       },
       onDelete: 'CASCADE',
@@ -28,6 +33,9 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeConstraint('reviewImages', 'review_id_reviewimage_constraint')
+    await queryInterface.changeColumn(options, 'reviewId', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    });
   },
 };

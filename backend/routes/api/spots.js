@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Spot, Review, Booking, reviewImage, spotImage, sequelize } = require('../../db/models');
+const { User, Spot, Review, Booking, reviewImage, spotImage, Sequelize } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const {
   validateBooking,
@@ -38,9 +38,13 @@ router.get('/', validateQueryParams, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
     ],
     include: [
+      {
+        model: Review,
+        attributes: [],
+      },
       {
         model: spotImage,
         attributes: ['url'],
@@ -52,7 +56,7 @@ router.get('/', validateQueryParams, async (req, res) => {
     where: filter,
     offset: (page - 1) * size,
     limit: size,
-    group: ['Spot.id'],
+    group: ['Spot.id', 'previewImage.id'],
   });
   res.json({
     spots,
@@ -128,12 +132,16 @@ router.get('/current', requireAuth, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
     ],
     where: {
       ownerId: userId,
     },
     include: [
+      {
+        model: Review,
+        attributes: [],
+      },
       {
         model: spotImage,
         attributes: ['url'],
@@ -143,6 +151,7 @@ router.get('/current', requireAuth, async (req, res) => {
         as: 'previewImage',
       },
     ],
+    group: ['Spot.id', 'previewImage.id'],
   });
 
   res.status(200).json(spot);
@@ -166,10 +175,16 @@ router.get('/:spotId', async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [sequelize.literal('(SELECT AVG(stars) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'avgRating'],
-      [sequelize.literal('(SELECT COUNT(*) FROM Reviews WHERE Spot.id = Reviews.spotId)'), 'numReviews'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
+      [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
     ],
     include: [
+      {
+        model: Review,
+        attributes: [],
+        duplicating: false,
+        required: false,
+      },
       {
         model: User,
         attributes: ['id', 'firstName', 'lastName'],
@@ -180,6 +195,7 @@ router.get('/:spotId', async (req, res) => {
         as: 'spotImages',
       },
     ],
+    group: ['Spot.id', 'spotImages.id', 'User.id'],
   });
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
@@ -205,6 +221,7 @@ router.put('/:spotId', requireAuth, async (req, res) => {
   if (country) spot.country = country;
   if (lat) spot.lat = lat;
   if (lng) spot.lng = lng;
+  if (name) spot.name = name;
   if (description) spot.description = description;
   if (price) spot.price = price;
   await spot.save();
