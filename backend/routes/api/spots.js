@@ -7,10 +7,22 @@ const {
   validateReview,
   validateSpot,
   validateSpotImage,
+  validateQueryParams,
 } = require('../../utils/validation');
 const { Op } = require('sequelize');
 
-router.get('/', async (_req, res) => {
+router.get('/', validateQueryParams, async (req, res) => {
+  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  const filter = {};
+  if (minLat) filter.lat = { [Op.gte]: parseFloat(minLat) };
+  if (maxLat) filter.lat = { ...filter.lat, [Op.lte]: parseFloat(maxLat) };
+  if (minLng) filter.lng = { [Op.gte]: parseFloat(minLng) };
+  if (maxLng) filter.lng = { ...filter.lng, [Op.lte]: parseFloat(maxLng) };
+  if (minPrice) filter.price = { [Op.gte]: parseFloat(minPrice) };
+  if (maxPrice) filter.price = { ...filter.price, [Op.lte]: parseFloat(maxPrice) };
+  console.log(maxPrice);
+
   const spots = await Spot.findAll({
     attributes: [
       'id',
@@ -37,9 +49,16 @@ router.get('/', async (_req, res) => {
         required: false,
       },
     ],
+    where: filter,
+    offset: (page - 1) * size,
+    limit: size,
     group: ['Spot.id'],
   });
-  res.json(spots);
+  res.json({
+    spots,
+    page: parseInt(page),
+    size: parseInt(size),
+  });
 });
 
 router.post('/', validateSpot, requireAuth, async (req, res) => {

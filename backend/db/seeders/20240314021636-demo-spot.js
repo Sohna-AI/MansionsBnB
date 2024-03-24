@@ -58,6 +58,30 @@ module.exports = {
           'This classic shingle style residence on 1.8 +/- acres in Southampton Village is only the shortest distance from the world class Southampton beaches. Ideal for a full summer rental, this completely renovated residence across three levels includes nine bedrooms.',
         price: 750000.0,
       },
+      {
+        ownerId: 2,
+        address: '123 Main St',
+        city: 'Demo City',
+        state: 'DS',
+        country: 'Demo Country',
+        lat: 37.1234,
+        lng: -122.5678,
+        name: 'Demo Spot 1',
+        description: 'This is a demo spot for testing purposes',
+        price: 50,
+      },
+      {
+        ownerId: 1,
+        address: '456 Elm St',
+        city: 'Demo City',
+        state: 'DS',
+        country: 'Demo Country',
+        lat: 37.2345,
+        lng: -122.6789,
+        name: 'Demo Spot 2',
+        description: 'Another demo spot for testing purposes',
+        price: 75,
+      },
     ];
 
     await Spot.bulkCreate(demo_spots, options);
