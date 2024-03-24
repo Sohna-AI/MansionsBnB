@@ -20,13 +20,13 @@ module.exports = {
      */
     const demo_booking = [
       {
-        spotId: 1,
+        spotId: 2,
         userId: 1,
-        startDate: '2024-10-16',
-        endDate: '2024-11-16',
+        startDate: '2024-04-16',
+        endDate: '2024-05-16',
       },
       {
-        spotId: 2,
+        spotId: 1,
         userId: 3,
         startDate: '2024-12-16',
         endDate: '2024-12-27',
