@@ -21,7 +21,6 @@ router.get('/', validateQueryParams, async (req, res) => {
   if (maxLng) filter.lng = { ...filter.lng, [Op.lte]: parseFloat(maxLng) };
   if (minPrice) filter.price = { [Op.gte]: parseFloat(minPrice) };
   if (maxPrice) filter.price = { ...filter.price, [Op.lte]: parseFloat(maxPrice) };
-  console.log(maxPrice);
 
   const spots = await Spot.findAll({
     attributes: [
@@ -86,7 +85,7 @@ router.post('/', validateSpot, requireAuth, async (req, res) => {
   res.status(201).json(newSpot);
 });
 
-router.post('/:spotId/spotImages', validateSpotImage, requireAuth, async (req, res) => {
+router.post('/:spotId/images', validateSpotImage, requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
 
