@@ -11,7 +11,6 @@ const {
   validateQueryParams,
 } = require('../../utils/validation');
 const { Op } = require('sequelize');
-
 router.get('/', validateQueryParams, async (req, res) => {
   const { page = 1, size = 20 } = req.query;
 
@@ -34,6 +33,10 @@ router.get('/', validateQueryParams, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
+<<<<<<< HEAD
+=======
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
+>>>>>>> 6cd088f (correction for /spots endpoint)
     ],
     include: [
       {
