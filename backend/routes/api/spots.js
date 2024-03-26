@@ -89,6 +89,43 @@ router.get('/', validateQueryParams, async (req, res) => {
   });
 });
 
+// router.get('/', async (_req, res) => {
+//   const spots = await Spot.findAll({
+//     attributes: [
+//       'id',
+//       'ownerId',
+//       'address',
+//       'city',
+//       'state',
+//       'country',
+//       'lat',
+//       'lng',
+//       'name',
+//       'description',
+//       'price',
+//       'createdAt',
+//       'updatedAt',
+//       [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
+//     ],
+//     include: [
+//       {
+//         model: Review,
+//         attributes: [],
+//       },
+//       {
+//         model: spotImage,
+//         attributes: ['url'],
+//         where: { preview: true },
+//         as: 'previewImage',
+//         required: false,
+//       },
+//     ],
+//     group: ['Spot.id', 'previewImage.id'],
+//   });
+
+//   res.json(spots);
+// });
+
 router.post('/', validateSpot, requireAuth, async (req, res) => {
   const { id: ownerId } = req.user;
 
