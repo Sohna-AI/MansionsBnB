@@ -3,10 +3,27 @@ const router = express.Router();
 const { User, Spot, Review, Booking, reviewImage, spotImage, Sequelize } = require('../../db/models');
 const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
-const { handleValidationErrors } = require('../../utils/validation');
+const {
+  validateBooking,
+  validateReview,
+  validateSpot,
+  validateSpotImage,
+  validateQueryParams,
+} = require('../../utils/validation');
 const { Op } = require('sequelize');
 
-router.get('/', async (_req, res) => {
+router.get('/', validateQueryParams, async (req, res) => {
+  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  const filter = {};
+  if (minLat) filter.lat = { [Op.gte]: parseFloat(minLat) };
+  if (maxLat) filter.lat = { ...filter.lat, [Op.lte]: parseFloat(maxLat) };
+  if (minLng) filter.lng = { [Op.gte]: parseFloat(minLng) };
+  if (maxLng) filter.lng = { ...filter.lng, [Op.lte]: parseFloat(maxLng) };
+  if (minPrice) filter.price = { [Op.gte]: parseFloat(minPrice) };
+  if (maxPrice) filter.price = { ...filter.price, [Op.lte]: parseFloat(maxPrice) };
+  console.log(maxPrice);
+
   const spots = await Spot.findAll({
     attributes: [
       'id',
@@ -37,32 +54,17 @@ router.get('/', async (_req, res) => {
         required: false,
       },
     ],
-    group: ['Spot.id', 'previewImage.id'],
+    where: filter,
+    offset: (page - 1) * size,
+    limit: size,
+    group: ['Spot.id'],
   });
-
-  res.json(spots);
+  res.json({
+    spots,
+    page: parseInt(page),
+    size: parseInt(size),
+  });
 });
-
-const validateSpot = [
-  check('address').notEmpty().withMessage('Address is required'),
-  check('city').notEmpty().withMessage('city is required'),
-  check('state')
-    .notEmpty()
-    .withMessage('state is required')
-    .isLength(2)
-    .withMessage('State must be abbreviated'),
-  check('country').notEmpty().withMessage('country is required'),
-  check('lat').notEmpty().withMessage('lat is required').isNumeric().withMessage('Lat must be a number'),
-  check('lng').notEmpty().withMessage('lng is required').isNumeric().withMessage('Lng must be a number'),
-  check('name').notEmpty().withMessage('name is required'),
-  check('description').notEmpty().withMessage('description is required'),
-  check('price')
-    .notEmpty()
-    .withMessage('price is required')
-    .isNumeric()
-    .withMessage('price must be a number'),
-  handleValidationErrors,
-];
 
 router.post('/', validateSpot, requireAuth, async (req, res) => {
   const { id: ownerId } = req.user;
@@ -85,13 +87,7 @@ router.post('/', validateSpot, requireAuth, async (req, res) => {
   res.status(201).json(newSpot);
 });
 
-const validSpotImage = [
-  check('url').notEmpty().withMessage('Must link an image'),
-  check('preview').isBoolean().withMessage('Must be true or false'),
-  handleValidationErrors,
-];
-
-router.post('/:spotId/spotImages', validSpotImage, requireAuth, async (req, res) => {
+router.post('/:spotId/spotImages', validateSpotImage, requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
 
@@ -277,16 +273,7 @@ router.get('/:spotId/reviews', async (req, res) => {
   res.status(200).json(review);
 });
 
-const validReview = [
-  check('review').notEmpty().withMessage('Review must not be empty'),
-  check('stars')
-    .exists()
-    .withMessage('Star rating is required')
-    .isInt({ min: 1, max: 5 })
-    .withMessage('Star rating can ONLY be between 1 - 5'),
-  handleValidationErrors,
-];
-router.post('/:spotId/reviews', validReview, requireAuth, async (req, res) => {
+router.post('/:spotId/reviews', validateReview, requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
@@ -352,13 +339,7 @@ router.get('/:spotId/bookings', async (req, res) => {
   }
 });
 
-const validBooking = [
-  check('startDate').notEmpty().withMessage('Must be a date'),
-  check('endDate').notEmpty().withMessage('Must be a date'),
-  handleValidationErrors,
-];
-
-router.post('/:spotId/bookings', validBooking, requireAuth, async (req, res) => {
+router.post('/:spotId/bookings', validateBooking, requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
@@ -379,13 +360,13 @@ router.post('/:spotId/bookings', validBooking, requireAuth, async (req, res) => 
 
   if (parseStart < currDate) {
     return res.status(400).json({
-      message: 'Start date cannot be in the past',
+      message: "Start date can't be in the past",
     });
   }
 
   if (parseEnd <= parseStart) {
     return res.status(400).json({
-      message: 'End date cannot be on or before startDate',
+      message: "End date can't be on or before startDate",
     });
   }
 

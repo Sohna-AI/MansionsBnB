@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { User, Review, Spot, reviewImage, spotImage, sequelize } = require('../../db/models');
-const { check } = require('express-validator');
 const { requireAuth } = require('../../utils/auth');
-const { handleValidationErrors } = require('../../utils/validation');
+const { validateReview, validateReviewImage } = require('../../utils/validation');
 
 router.get('/current', requireAuth, async (req, res) => {
   const userId = req.user.id;
@@ -44,9 +43,7 @@ router.get('/current', requireAuth, async (req, res) => {
   res.status(200).json(reviews);
 });
 
-const validImage = [check('url').notEmpty().withMessage('Must provide a url'), handleValidationErrors];
-
-router.post('/:reviewId/reviewImages', validImage, requireAuth, async (req, res) => {
+router.post('/:reviewId/reviewImages', validateReviewImage, requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const { url } = req.body;
   const review = await Review.findByPk(reviewId);
@@ -87,13 +84,7 @@ router.post('/:reviewId/reviewImages', validImage, requireAuth, async (req, res)
   }
 });
 
-const validReview = [
-  check('review').notEmpty().withMessage('Review text is required'),
-  check('stars').exists().isInt({ min: 1, max: 5 }).withMessage('Stars must be an integer from 1 to 5'),
-  handleValidationErrors,
-];
-
-router.put('/:reviewId', validReview, requireAuth, async (req, res) => {
+router.put('/:reviewId', validateReview, requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user.id;
   const { review, stars } = req.body;
