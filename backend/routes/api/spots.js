@@ -42,13 +42,7 @@ router.get('/', validateQueryParams, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      // [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
-      [
-        Sequelize.literal(
-          '(SELECT ROUND(AVG("stars"), 1) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id")'
-        ),
-        'avgRating',
-      ],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
     ],
     include: [
       {
