@@ -10,18 +10,23 @@ const {
   validateQueryParams,
 } = require('../../utils/validation');
 const { Op } = require('sequelize');
-
-router.get('/', validateQueryParams, async (req, res) => {
-  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
-
+const buildFilter = (query) => {
   const filter = {};
-  if (minLat) filter.lat = { [Op.gte]: parseFloat(minLat) };
-  if (maxLat) filter.lat = { ...filter.lat, [Op.lte]: parseFloat(maxLat) };
-  if (minLng) filter.lng = { [Op.gte]: parseFloat(minLng) };
-  if (maxLng) filter.lng = { ...filter.lng, [Op.lte]: parseFloat(maxLng) };
-  if (minPrice) filter.price = { [Op.gte]: parseFloat(minPrice) };
-  if (maxPrice) filter.price = { ...filter.price, [Op.lte]: parseFloat(maxPrice) };
+  if (query.minLat) filter.lat = { [Op.gte]: parseFloat(minLat) };
+  if (query.maxLat) filter.lat = { ...filter.lat, [Op.lte]: parseFloat(maxLat) };
+  if (query.minLng) filter.lng = { [Op.gte]: parseFloat(minLng) };
+  if (query.maxLng) filter.lng = { ...filter.lng, [Op.lte]: parseFloat(maxLng) };
+  if (query.minPrice) filter.price = { [Op.gte]: parseFloat(minPrice) };
+  if (query.maxPrice) filter.price = { ...filter.price, [Op.lte]: parseFloat(maxPrice) };
+  return filter;
+};
+router.get('/', validateQueryParams, async (req, res) => {
+  const { page = 1, size = 20 } = req.query;
 
+  const pageNumber = parseInt(page);
+  const pageSize = parseInt(size);
+  const offset = (pageNumber - 1) * pageSize;
+  const filter = buildFilter(req.query);
   const spots = await Spot.findAll({
     attributes: [
       'id',
@@ -39,7 +44,9 @@ router.get('/', validateQueryParams, async (req, res) => {
       'updatedAt',
       // [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
       [
-        Sequelize.literal('(SELECT ROUND(AVG(stars), 1) FROM Reviews WHERE Reviews.spotId = Spot.id)'),
+        Sequelize.literal(
+          '(SELECT ROUND(AVG("stars"), 1) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id")'
+        ),
         'avgRating',
       ],
     ],
@@ -56,15 +63,15 @@ router.get('/', validateQueryParams, async (req, res) => {
         required: false,
       },
     ],
-    where: filter,
-    offset: (page - 1) * size,
-    limit: size,
     group: ['Spot.id', 'previewImage.id'],
+    where: filter,
+    limit: pageSize,
+    offset: offset,
   });
   res.json({
     spots,
-    page: parseInt(page),
-    size: parseInt(size),
+    page: pageNumber,
+    size: pageSize,
   });
 });
 
