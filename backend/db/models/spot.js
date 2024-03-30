@@ -1,5 +1,12 @@
 'use strict';
 const { Model } = require('sequelize');
+const {
+  validCountries,
+  validStatesInAmerica,
+  validStatesInCanada,
+  validStatesInMexico,
+  validStatesInUk,
+} = require('../../utils/validatePlaces');
 module.exports = (sequelize, DataTypes) => {
   class Spot extends Model {
     /**
@@ -66,7 +73,26 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           notEmpty: true,
-          len: [2, 2],
+          len: [2, 3],
+          matchState(value) {
+            if (this.country === 'United States' && this.state.length > 2) {
+              if (!validStatesInAmerica.includes(value)) {
+                throw new Error('Must be a valid state in United States');
+              }
+            } else if (this.country === 'United Kingdom') {
+              if (!validStatesInUk.includes(value)) {
+                throw new Error('Must be a valid state in United Kingdom');
+              }
+            } else if (this.country === 'Canada' && this.state.length > 2) {
+              if (!validStatesInCanada.includes(value)) {
+                throw new Error('Must be a valid state in Canada');
+              }
+            } else if (this.country === 'Mexico' && this.state.length > 2) {
+              if (!validStatesInMexico.includes(value)) {
+                throw new Error('Must be a valid state in Mexico');
+              }
+            }
+          },
         },
       },
       country: {
@@ -76,11 +102,13 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true,
           notEmpty: true,
           len: [2, 30],
+          isIn: [validCountries],
         },
       },
       lat: {
         type: DataTypes.DECIMAL(10, 7),
         allowNull: false,
+        unique: true,
         validate: {
           notNull: true,
           isDecimal: true,
@@ -91,6 +119,7 @@ module.exports = (sequelize, DataTypes) => {
       lng: {
         type: DataTypes.DECIMAL(10, 7),
         allowNull: false,
+        unique: true,
         validate: {
           notNull: true,
           isDecimal: true,
