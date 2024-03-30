@@ -3,6 +3,7 @@ const router = express.Router();
 const { User, Spot, Review, Booking, reviewImage, spotImage, Sequelize } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { calculateAverageRating, buildFilter } = require('../../utils/helpers');
+const { calculateAverageRating, buildFilter } = require('../../utils/helpers');
 const {
   validateBooking,
   validateReview,
@@ -11,6 +12,16 @@ const {
   validateQueryParams,
 } = require('../../utils/validation');
 const { Op } = require('sequelize');
+const buildFilter = (query) => {
+  const filter = {};
+  if (query.minLat) filter.lat = { [Op.gte]: parseFloat(minLat) };
+  if (query.maxLat) filter.lat = { ...filter.lat, [Op.lte]: parseFloat(maxLat) };
+  if (query.minLng) filter.lng = { [Op.gte]: parseFloat(minLng) };
+  if (query.maxLng) filter.lng = { ...filter.lng, [Op.lte]: parseFloat(maxLng) };
+  if (query.minPrice) filter.price = { [Op.gte]: parseFloat(minPrice) };
+  if (query.maxPrice) filter.price = { ...filter.price, [Op.lte]: parseFloat(maxPrice) };
+  return filter;
+};
 router.get('/', validateQueryParams, async (req, res) => {
   const { page = 1, size = 20 } = req.query;
 
@@ -33,14 +44,12 @@ router.get('/', validateQueryParams, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-<<<<<<< HEAD
-=======
-      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
->>>>>>> 6cd088f (correction for /spots endpoint)
     ],
     include: [
       {
         model: Review,
+        attributes: ['stars'],
+        required: false,
         attributes: ['stars'],
         required: false,
       },
@@ -57,6 +66,7 @@ router.get('/', validateQueryParams, async (req, res) => {
     limit: pageSize,
     offset: offset,
   });
+
 
   for (const spot of spots) {
     const avgRating = await calculateAverageRating(spot.id);
