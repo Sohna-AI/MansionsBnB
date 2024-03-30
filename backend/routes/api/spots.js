@@ -49,7 +49,7 @@ router.get('/', validateQueryParams, async (req, res) => {
         required: false,
       },
     ],
-    group: ['Spot.id', 'previewImage.id'],
+    group: ['Spot.id'],
     where: filter,
     limit: pageSize,
     offset: offset,
