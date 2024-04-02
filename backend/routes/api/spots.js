@@ -359,7 +359,11 @@ router.get('/:spotId/bookings', async (req, res) => {
         spotId: spotId,
       },
     });
-    return res.status(200).json(bookings);
+    if (!bookings) {
+      return res.status(404).json({
+        message: 'Spot has no scheduled Bookings',
+      });
+    } else return res.status(200).json(bookings);
   }
 });
 
