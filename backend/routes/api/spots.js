@@ -291,7 +291,7 @@ router.get('/:spotId/reviews', async (req, res) => {
       },
     ],
   });
-  if (!review) {
+  if (!review.length) {
     return res.status(404).json({
       message: 'Spot has no reviews',
     });
