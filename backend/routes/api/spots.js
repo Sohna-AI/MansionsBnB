@@ -40,8 +40,6 @@ router.get('/', validateQueryParams, async (req, res) => {
         model: Review,
         attributes: ['stars'],
         required: false,
-        attributes: ['stars'],
-        required: false,
       },
       {
         model: spotImage,
