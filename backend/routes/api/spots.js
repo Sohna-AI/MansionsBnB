@@ -53,6 +53,7 @@ router.get('/', validateQueryParams, async (req, res) => {
     where: filter,
     limit: pageSize,
     offset: offset,
+    order: [['id', 'ASC']],
   });
 
   for (const spot of spots) {
