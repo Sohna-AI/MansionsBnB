@@ -40,7 +40,7 @@ router.get('/current', requireAuth, async (req, res) => {
       },
     ],
   });
-  res.status(200).json(reviews);
+  return res.status(200).json(reviews);
 });
 
 router.post('/:reviewId/images', validateReviewImage, requireAuth, async (req, res) => {
@@ -77,7 +77,7 @@ router.post('/:reviewId/images', validateReviewImage, requireAuth, async (req, r
       url: url,
       reviewId: reviewId,
     });
-    res.status(201).json({
+    return res.status(201).json({
       id: newImage.id,
       url: newImage.url,
     });
@@ -106,7 +106,7 @@ router.put('/:reviewId', validateReview, requireAuth, async (req, res) => {
   findReview.stars = stars;
   await findReview.save();
 
-  res.status(200).json(findReview);
+  return res.status(200).json(findReview);
 });
 
 router.delete('/:reviewId', requireAuth, async (req, res) => {
@@ -127,7 +127,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
   }
 
   await findReview.destroy();
-  res.status(200).json({
+  return res.status(200).json({
     message: 'Successfully deleted',
   });
 });

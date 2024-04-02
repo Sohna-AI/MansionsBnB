@@ -83,7 +83,7 @@ router.get('/', validateQueryParams, async (req, res) => {
     };
   });
 
-  res.json({
+  return res.json({
     Spots: responseSpots,
     page: pageNumber,
     size: pageSize,
@@ -108,7 +108,7 @@ router.post('/', validateSpot, requireAuth, async (req, res) => {
     price,
   });
 
-  res.status(201).json(newSpot);
+  return res.status(201).json(newSpot);
 });
 
 router.post('/:spotId/images', validateSpotImage, requireAuth, async (req, res) => {
@@ -136,7 +136,7 @@ router.post('/:spotId/images', validateSpotImage, requireAuth, async (req, res) 
     preview: preview,
   });
 
-  res.status(201).json(newImage);
+  return res.status(201).json(newImage);
 });
 
 router.get('/current', requireAuth, async (req, res) => {
@@ -179,7 +179,7 @@ router.get('/current', requireAuth, async (req, res) => {
     group: ['Spot.id', 'previewImage.id'],
   });
 
-  res.status(200).json(spot);
+  return res.status(200).json(spot);
 });
 
 router.get('/:spotId', async (req, res) => {
@@ -225,7 +225,7 @@ router.get('/:spotId', async (req, res) => {
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
   }
-  res.status(200).json(spot);
+  return res.status(200).json(spot);
 });
 
 router.put('/:spotId', requireAuth, async (req, res) => {
@@ -259,15 +259,13 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
   const spot = await Spot.findByPk(spotId);
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
-  }
-
-  if (req.user.id !== spot.ownerId) {
+  } else if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
       error: 'Authorization required: Only the owner can edit the spot',
     });
   }
   await spot.destroy();
-  res.status(200).json({
+  return res.status(200).json({
     message: 'Successful deletion',
   });
 });
@@ -293,8 +291,11 @@ router.get('/:spotId/reviews', async (req, res) => {
       },
     ],
   });
-
-  res.status(200).json(review);
+  if (!review) {
+    return res.status(404).json({
+      message: 'Spot has no reviews',
+    });
+  } else return res.status(200).json(review);
 });
 
 router.post('/:spotId/reviews', validateReview, requireAuth, async (req, res) => {
@@ -339,31 +340,32 @@ router.get('/:spotId/bookings', async (req, res) => {
       message: "Spot couldn't be found",
     });
   }
+  const userBookings = await Booking.findAll({
+    where: {
+      userId: userId,
+    },
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+    ],
+  });
+
+  const spotBookings = await Booking.findAll({
+    attributes: ['spotId', 'startDate', 'endDate'],
+    where: {
+      spotId: spotId,
+    },
+  });
   if (userId === spot.ownerId) {
-    const bookings = await Booking.findAll({
-      where: {
-        userId: userId,
-      },
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'firstName', 'lastName'],
-        },
-      ],
+    return res.status(200).json(userBookings);
+  } else if (!spotBookings || !userBookings) {
+    return res.status(404).json({
+      message: 'Spot or User has no scheduled Bookings',
     });
-    return res.status(200).json(bookings);
   } else {
-    const bookings = await Booking.findAll({
-      attributes: ['spotId', 'startDate', 'endDate'],
-      where: {
-        spotId: spotId,
-      },
-    });
-    if (!bookings) {
-      return res.status(404).json({
-        message: 'Spot has no scheduled Bookings',
-      });
-    } else return res.status(200).json(bookings);
+    return res.status(200).json(spotBookings);
   }
 });
 

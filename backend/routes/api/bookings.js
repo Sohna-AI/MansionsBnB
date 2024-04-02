@@ -30,7 +30,11 @@ router.get('/current', requireAuth, async (req, res) => {
       },
     ],
   });
-
+  if (!bookings) {
+    return res.status(404).json({
+      message: 'No bookings were found for current user',
+    });
+  }
   res.status(200).json(bookings);
 });
 
