@@ -331,7 +331,7 @@ router.post('/:spotId/reviews', validateReview, requireAuth, async (req, res) =>
   return res.status(201).json(newReview);
 });
 
-router.get('/:spotId/bookings', async (req, res) => {
+router.get('/:spotId/bookings', requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
@@ -358,15 +358,13 @@ router.get('/:spotId/bookings', async (req, res) => {
       spotId: spotId,
     },
   });
-  if (userId === spot.ownerId) {
-    return res.status(200).json(userBookings);
-  } else if (!spotBookings || !userBookings) {
+  if (!spotBookings.length || !userBookings.length) {
     return res.status(404).json({
       message: 'Spot or User has no scheduled Bookings',
     });
-  } else {
-    return res.status(200).json(spotBookings);
-  }
+  } else if (userId === spot.ownerId) {
+    return res.status(200).json(userBookings);
+  } else return res.status(200).json(spotBookings);
 });
 
 router.post('/:spotId/bookings', validateBooking, requireAuth, async (req, res) => {
