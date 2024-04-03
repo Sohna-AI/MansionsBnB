@@ -1,6 +1,11 @@
 'use strict';
 const { ReviewImage } = require('../models');
-
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;
+}
+options.validate = true;
+options.tableName = 'ReviewImages';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -27,7 +32,7 @@ module.exports = {
         reviewId: 3,
       },
     ];
-    await ReviewImage.bulkCreate(demo_reviewImage, { validate: true });
+    await ReviewImage.bulkCreate(demo_reviewImage, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -37,6 +42,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('ReviewImages', null, {});
+    await queryInterface.bulkDelete(options, null, {});
   },
 };
