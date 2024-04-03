@@ -38,7 +38,7 @@ router.get('/current', requireAuth, async (req, res) => {
   res.status(200).json(bookings);
 });
 
-router.put('/:bookingId', validateBooking, requireAuth, async (req, res) => {
+router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   const bookingId = req.params.bookingId;
   const { startDate, endDate } = req.body;
   const booking = await Booking.findByPk(bookingId);
@@ -82,11 +82,17 @@ router.put('/:bookingId', validateBooking, requireAuth, async (req, res) => {
     return res.status(400).json({
       message: "End date can't be on or before startDate",
     });
-  } else if (existingBookings) {
+  } else if (existingBookings.startDate) {
     return res.status(403).json({
       message: 'Sorry, this spot is already booked for the specified dates',
       errors: {
         startDate: 'Start date conflicts with an existing booking',
+      },
+    });
+  } else if (existingBookings.endDate) {
+    return res.status(403).json({
+      message: 'Sorry, this spot is already booked for the specified dates',
+      errors: {
         endDate: 'End Date conflicts with an existing booking',
       },
     });

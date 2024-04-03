@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Spot.belongsTo(models.User, {
         foreignKey: 'ownerId',
+        as: 'Owner',
       });
 
       Spot.hasMany(models.Review, {
@@ -64,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           notEmpty: true,
-          len: [2, 15],
+          len: [2, 20],
         },
       },
       state: {
@@ -73,9 +74,9 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           notEmpty: true,
-          len: [2, 3],
+          len: [3, 20],
           matchState(value) {
-            if (this.country === 'United States' && this.state.length > 2) {
+            if (this.country === 'United States of America') {
               if (!validStatesInAmerica.includes(value)) {
                 throw new Error('Must be a valid state in United States');
               }
@@ -83,11 +84,11 @@ module.exports = (sequelize, DataTypes) => {
               if (!validStatesInUk.includes(value)) {
                 throw new Error('Must be a valid state in United Kingdom');
               }
-            } else if (this.country === 'Canada' && this.state.length > 2) {
+            } else if (this.country === 'Canada') {
               if (!validStatesInCanada.includes(value)) {
                 throw new Error('Must be a valid state in Canada');
               }
-            } else if (this.country === 'Mexico' && this.state.length > 2) {
+            } else if (this.country === 'Mexico') {
               if (!validStatesInMexico.includes(value)) {
                 throw new Error('Must be a valid state in Mexico');
               }
@@ -134,7 +135,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: true,
           notNull: true,
-          len: [3, 30],
+          len: [3, 50],
         },
       },
       description: {
@@ -153,6 +154,20 @@ module.exports = (sequelize, DataTypes) => {
           isDecimal: true,
           notNull: true,
           min: 50,
+        },
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: sequelize.NOW,
+        get() {
+          return this.getDataValue('createdAt').toISOString().replace('T', ' ').split('.')[0];
+        },
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: sequelize.NOW,
+        get() {
+          return this.getDataValue('updatedAt').toISOString().replace('T', ' ').split('.')[0];
         },
       },
     },

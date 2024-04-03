@@ -21,8 +21,10 @@ const validateSignup = [
   check('username')
     .exists({ checkFalsy: true })
     .isLength({ min: 4 })
-    .withMessage('Please provide a username with at 4 characters.'),
+    .withMessage('Please provide a username with at least 4 characters.'),
   check('username').not().isEmail().withMessage('Username cannot be an email.'),
+  check('firstName').exists({ checkFalsy: true }).withMessage('First Name is required'),
+  check('lastName').exists({ checkFalsy: true }).withMessage('Last Name is required'),
   check('password')
     .exists({ checkFalsy: true })
     .isLength({ min: 6 })
@@ -39,24 +41,52 @@ const validateLogin = [
   handleValidationErrors,
 ];
 
+const isValidLatitude = (value) => {
+  const latitude = parseFloat(value);
+  return latitude >= -90 && latitude <= 90;
+};
+
+const isvalidLongitude = (value) => {
+  const longitude = parseFloat(value);
+  return longitude >= -180 && longitude <= 180;
+};
+
+const isValidPrice = (value) => {
+  const price = parseFloat(value);
+  return price >= 0;
+};
+
 const validateSpot = [
   check('address').notEmpty().withMessage('Address is required'),
   check('city').notEmpty().withMessage('city is required'),
-  check('state')
-    .notEmpty()
-    .withMessage('state is required')
-    .isLength(2)
-    .withMessage('State must be abbreviated'),
+  check('state').notEmpty().withMessage('state is required'),
   check('country').notEmpty().withMessage('country is required'),
-  check('lat').notEmpty().withMessage('lat is required').isNumeric().withMessage('Lat must be a number'),
-  check('lng').notEmpty().withMessage('lng is required').isNumeric().withMessage('Lng must be a number'),
-  check('name').notEmpty().withMessage('name is required'),
+  check('lat')
+    .notEmpty()
+    .withMessage('Latitude is required')
+    .isDecimal()
+    .withMessage('Latitude must be a decimal number')
+    .custom(isValidLatitude)
+    .withMessage('Latitude must be between -90 and 90'),
+  check('lng')
+    .notEmpty()
+    .withMessage('Longitude is required')
+    .isDecimal()
+    .withMessage('Longitude must be a decimal number')
+    .custom(isvalidLongitude)
+    .withMessage('Longitude must be between -180 and 180'),
+  check('name')
+    .notEmpty()
+    .withMessage('name is required')
+    .isLength({ max: 50 })
+    .withMessage('Name must be less than 50 characters'),
   check('description').notEmpty().withMessage('description is required'),
   check('price')
     .notEmpty()
     .withMessage('price is required')
-    .isNumeric()
-    .withMessage('price must be a number'),
+    .isDecimal()
+    .custom(isValidPrice)
+    .withMessage('price per day must be a positive number'),
   handleValidationErrors,
 ];
 

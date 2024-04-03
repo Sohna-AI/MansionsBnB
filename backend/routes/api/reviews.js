@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Review, Spot, reviewImage, spotImage, sequelize } = require('../../db/models');
+const { User, Review, Spot, ReviewImage, spotImage, sequelize } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { validateReview, validateReviewImage } = require('../../utils/validation');
 
@@ -35,15 +35,15 @@ router.get('/current', requireAuth, async (req, res) => {
         ],
       },
       {
-        model: reviewImage,
+        model: ReviewImage,
         attributes: ['id', 'url'],
       },
     ],
   });
-  return res.status(200).json(reviews);
+  return res.status(200).json({ Reviews: reviews });
 });
 
-router.post('/:reviewId/images', validateReviewImage, requireAuth, async (req, res) => {
+router.post('/:reviewId/images', requireAuth, validateReviewImage, async (req, res) => {
   const { reviewId } = req.params;
   const { url } = req.body;
   const review = await Review.findByPk(reviewId);
@@ -60,7 +60,7 @@ router.post('/:reviewId/images', validateReviewImage, requireAuth, async (req, r
     });
   }
 
-  const imageCount = await reviewImage.count({
+  const imageCount = await ReviewImage.count({
     where: {
       reviewId: reviewId,
     },
@@ -73,7 +73,7 @@ router.post('/:reviewId/images', validateReviewImage, requireAuth, async (req, r
     });
   }
   if (imageCount < 10) {
-    const newImage = await reviewImage.create({
+    const newImage = await ReviewImage.create({
       url: url,
       reviewId: reviewId,
     });
@@ -84,7 +84,7 @@ router.post('/:reviewId/images', validateReviewImage, requireAuth, async (req, r
   }
 });
 
-router.put('/:reviewId', validateReview, requireAuth, async (req, res) => {
+router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
   const { reviewId } = req.params;
   const userId = req.user.id;
   const { review, stars } = req.body;

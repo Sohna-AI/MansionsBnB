@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Review.belongsTo(models.Spot, {
         foreignKey: 'spotId',
       });
-      Review.hasMany(models.reviewImage, {
+      Review.hasMany(models.ReviewImage, {
         foreignKey: 'reviewId',
       });
     }
@@ -52,6 +52,20 @@ module.exports = (sequelize, DataTypes) => {
           max: 5,
           notNull: true,
           isNumeric: true,
+        },
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: sequelize.NOW,
+        get() {
+          return this.getDataValue('createdAt').toISOString().replace('T', ' ').split('.')[0];
+        },
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: sequelize.NOW,
+        get() {
+          return this.getDataValue('updatedAt').toISOString().replace('T', ' ').split('.')[0];
         },
       },
     },

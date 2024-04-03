@@ -25,11 +25,11 @@ module.exports = {
           allowNull: false,
         },
         city: {
-          type: Sequelize.STRING(15),
+          type: Sequelize.STRING(20),
           allowNull: false,
         },
         state: {
-          type: Sequelize.STRING(3),
+          type: Sequelize.STRING(20),
           allowNull: false,
         },
         country: {
@@ -45,7 +45,7 @@ module.exports = {
           allowNull: false,
         },
         name: {
-          type: Sequelize.STRING(30),
+          type: Sequelize.STRING(50),
           allowNull: false,
         },
         description: {

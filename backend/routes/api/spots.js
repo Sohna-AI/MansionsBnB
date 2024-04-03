@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Spot, Review, Booking, reviewImage, spotImage, Sequelize } = require('../../db/models');
+const { User, Spot, Review, Booking, ReviewImage, spotImage, Sequelize } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { calculateAverageRating, buildFilter } = require('../../utils/helpers');
 const {
@@ -78,6 +78,7 @@ router.get('/', validateQueryParams, async (req, res) => {
       price: spotData.price,
       createdAt: spotData.createdAt,
       updatedAt: spotData.updatedAt,
+
       avgRating: spotData.avgRating,
       previewImage: spotData.previewImage,
     };
@@ -90,7 +91,7 @@ router.get('/', validateQueryParams, async (req, res) => {
   });
 });
 
-router.post('/', validateSpot, requireAuth, async (req, res) => {
+router.post('/', requireAuth, validateSpot, async (req, res) => {
   const { id: ownerId } = req.user;
 
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -111,7 +112,7 @@ router.post('/', validateSpot, requireAuth, async (req, res) => {
   return res.status(201).json(newSpot);
 });
 
-router.post('/:spotId/images', validateSpotImage, requireAuth, async (req, res) => {
+router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
 
@@ -140,7 +141,8 @@ router.post('/:spotId/images', validateSpotImage, requireAuth, async (req, res) 
 });
 
 router.get('/current', requireAuth, async (req, res) => {
-  const userId = req.user.id;
+  const userIdParam = req.user.id;
+  const userId = parseInt(userIdParam);
 
   const spot = await Spot.findAll({
     attributes: [
@@ -200,8 +202,8 @@ router.get('/:spotId', async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
       [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
+      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgStarRating'],
     ],
     include: [
       {
@@ -211,16 +213,17 @@ router.get('/:spotId', async (req, res) => {
         required: false,
       },
       {
-        model: User,
-        attributes: ['id', 'firstName', 'lastName'],
-      },
-      {
         model: spotImage,
         attributes: ['id', 'url', 'preview'],
         as: 'spotImages',
       },
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+        as: 'Owner',
+      },
     ],
-    group: ['Spot.id', 'spotImages.id', 'User.id'],
+    group: ['Spot.id', 'spotImages.id', 'Owner.id'],
   });
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
@@ -228,7 +231,7 @@ router.get('/:spotId', async (req, res) => {
   return res.status(200).json(spot);
 });
 
-router.put('/:spotId', requireAuth, async (req, res) => {
+router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { spotId } = req.params;
   const spot = await Spot.findByPk(spotId);
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -286,7 +289,7 @@ router.get('/:spotId/reviews', async (req, res) => {
         attributes: ['id', 'firstName', 'lastName'],
       },
       {
-        model: reviewImage,
+        model: ReviewImage,
         attributes: ['id', 'url'],
       },
     ],
@@ -295,10 +298,13 @@ router.get('/:spotId/reviews', async (req, res) => {
     return res.status(404).json({
       message: 'Spot has no reviews',
     });
-  } else return res.status(200).json(review);
+  } else
+    return res.status(200).json({
+      Reviews: review,
+    });
 });
 
-router.post('/:spotId/reviews', validateReview, requireAuth, async (req, res) => {
+router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) => {
   const { spotId } = req.params;
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
@@ -358,17 +364,22 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       spotId: spotId,
     },
   });
-  if (!spotBookings.length || !userBookings.length) {
+  if (!spotBookings.length) {
     return res.status(404).json({
-      message: 'Spot or User has no scheduled Bookings',
+      message: 'Spot has no scheduled Bookings',
+    });
+  } else if (!userBookings.length) {
+    return res.status(404).json({
+      message: 'User has no scheduled Bookings',
     });
   } else if (userId === spot.ownerId) {
     return res.status(200).json(userBookings);
   } else return res.status(200).json(spotBookings);
 });
 
-router.post('/:spotId/bookings', validateBooking, requireAuth, async (req, res) => {
-  const { spotId } = req.params;
+router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) => {
+  const spotIdParam = req.params.spotId;
+  const spotId = parseInt(spotIdParam);
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
   if (!spot) {
@@ -386,9 +397,13 @@ router.post('/:spotId/bookings', validateBooking, requireAuth, async (req, res) 
   const parseStart = new Date(startDate);
   const parseEnd = new Date(endDate);
 
-  if (parseStart < currDate) {
+  if (parseStart < currDate || parseEnd < currDate) {
     return res.status(400).json({
-      message: "Start date can't be in the past",
+      message: 'Dates in the past',
+      errors: {
+        startDate: "Start date can't be in the past",
+        endDate: "End date can't be in the past",
+      },
     });
   }
 
@@ -401,16 +416,13 @@ router.post('/:spotId/bookings', validateBooking, requireAuth, async (req, res) 
   const existingBookings = await Booking.findOne({
     where: {
       spotId: spotId,
-      [Op.or]: [
-        {
-          startDate: {
-            [Op.lt]: parseEnd,
-          },
-          endDate: {
-            [Op.gt]: parseStart,
-          },
-        },
-      ],
+
+      startDate: {
+        [Op.lte]: parseStart,
+      },
+      endDate: {
+        [Op.gte]: parseEnd,
+      },
     },
   });
   if (existingBookings) {
@@ -418,7 +430,131 @@ router.post('/:spotId/bookings', validateBooking, requireAuth, async (req, res) 
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking',
-        endDate: 'End Date conflicts wiht an existing booking',
+        endDate: 'End Date conflicts with an existing booking',
+      },
+    });
+  }
+  const existingSurroundBookings = await Booking.findOne({
+    where: {
+      spotId: spotId,
+
+      startDate: {
+        [Op.gt]: parseStart,
+      },
+      endDate: {
+        [Op.lt]: parseEnd,
+      },
+    },
+  });
+  if (existingSurroundBookings) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date surrounds an existing booking',
+        endDate: 'End Date surrounds an existing booking',
+      },
+    });
+  }
+  const existingStartDate = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      startDate: {
+        [Op.is]: parseStart,
+      },
+    },
+  });
+
+  if (existingStartDate) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking start date',
+      },
+    });
+  }
+
+  const existingEndDate = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      endDate: {
+        [Op.is]: parseStart,
+      },
+    },
+  });
+  if (existingEndDate) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking end date',
+      },
+    });
+  }
+  const existingStartDateEnd = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      startDate: {
+        [Op.is]: parseEnd,
+      },
+    },
+  });
+
+  if (existingStartDateEnd) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        endDate: 'End date conflicts with an existing booking start date',
+      },
+    });
+  }
+
+  // Check if end date of new booking conflicts with existing bookings' end dates
+  const existingEndDateEnd = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      endDate: {
+        [Op.is]: parseEnd,
+      },
+    },
+  });
+
+  if (existingEndDateEnd) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        endDate: 'End date conflicts with an existing booking end date',
+      },
+    });
+  }
+
+  const startDuringExisting = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      startDate: {
+        [Op.lt]: parseEnd,
+      },
+    },
+  });
+  if (startDuringExisting) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        endDate: 'Start date conflicts with an existing booking in progress',
+      },
+    });
+  }
+  const endDuringExisting = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      endDate: {
+        [Op.lte]: parseStart,
+      },
+    },
+  });
+  if (endDuringExisting) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        endDate: 'End date conflicts with an existing booking in progress',
       },
     });
   }
