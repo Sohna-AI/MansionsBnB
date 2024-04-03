@@ -56,6 +56,24 @@ const isValidPrice = (value) => {
   return price >= 0;
 };
 
+const minLat = (value) => {
+  const lat = parseFloat(value);
+  return lat >= -90;
+};
+const maxLat = (value) => {
+  const lat = parseFloat(value);
+  return lat <= 90;
+};
+
+const minLng = (value) => {
+  const lng = parseFloat(value);
+  return lng >= -180;
+};
+const maxLng = (value) => {
+  const lng = parseFloat(value);
+  return lng <= 180;
+};
+
 const validateSpot = [
   check('address').notEmpty().withMessage('Address is required'),
   check('city').notEmpty().withMessage('city is required'),
@@ -117,12 +135,28 @@ const validateBooking = [
 ];
 
 const validateQueryParams = [
-  check('page').optional().isInt({ min: 1, max: 10 }).withMessage('Page must be greater than or equal to 1'),
-  check('size').optional().isInt({ min: 1, max: 20 }).withMessage('Size must be greater than or equal to 1'),
-  check('minLat').optional().isFloat().withMessage('Minimum latitude is invalid'),
-  check('maxLat').optional().isFloat().withMessage('Maximum latitude is invalid'),
-  check('minLng').optional().isFloat().withMessage('Minimum longitude is invalid'),
-  check('maxLng').optional().isFloat().withMessage('Maximum longitude is invalid'),
+  check('page').optional().isInt({ min: 1, max: 10 }).withMessage('Page must be between 1 and 10'),
+  check('size').optional().isInt({ min: 1, max: 20 }).withMessage('Size must be between 1 and 20'),
+  check('minLat')
+    .optional()
+    .isFloat()
+    .custom(minLat)
+    .withMessage('Minimum latitude is invalid; Must be greater than or equal to -90'),
+  check('maxLat')
+    .optional()
+    .isFloat()
+    .custom(maxLat)
+    .withMessage('Maximum latitude is invalid; Must be greater than or equal to 90'),
+  check('minLng')
+    .optional()
+    .isFloat()
+    .custom(minLng)
+    .withMessage('Minimum longitude is invalid; Must be greater than or equal to -180'),
+  check('maxLng')
+    .optional()
+    .isFloat()
+    .custom(maxLng)
+    .withMessage('Maximum longitude is invalid; Must be greater than or equal to 180'),
   check('minPrice')
     .optional()
     .isFloat({ min: 0 })

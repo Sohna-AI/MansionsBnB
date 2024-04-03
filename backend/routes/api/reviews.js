@@ -40,6 +40,11 @@ router.get('/current', requireAuth, async (req, res) => {
       },
     ],
   });
+  if (!reviews.length) {
+    return res.status(200).json({
+      message: 'User has no reviews',
+    });
+  }
   return res.status(200).json({ Reviews: reviews });
 });
 

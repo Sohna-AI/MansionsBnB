@@ -10,6 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       spotImage.belongsTo(models.Spot, {
         foreignKey: 'spotId',
+        as: 'previewImage',
+      });
+
+      spotImage.belongsTo(models.Spot, {
+        foreignKey: 'spotId',
+        as: 'spotImages',
       });
     }
   }
@@ -26,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notNull: true
-        }
+          notNull: true,
+        },
       },
       preview: {
         type: DataTypes.BOOLEAN,

@@ -180,7 +180,11 @@ router.get('/current', requireAuth, async (req, res) => {
     ],
     group: ['Spot.id', 'previewImage.id'],
   });
-
+  if (!spot.length) {
+    return res.status(200).json({
+      message: 'User has no spots',
+    });
+  }
   return res.status(200).json(spot);
 });
 
@@ -259,7 +263,12 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
 
 router.delete('/:spotId', requireAuth, async (req, res) => {
   const { spotId } = req.params;
-  const spot = await Spot.findByPk(spotId);
+
+  const spot = await Spot.findOne({
+    where: {
+      id: spotId,
+    },
+  });
   if (!spot) {
     return res.status(404).json({ error: "Spot couldn't be found" });
   } else if (req.user.id !== spot.ownerId) {
@@ -267,6 +276,9 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
       error: 'Authorization required: Only the owner can edit the spot',
     });
   }
+  await Review.destroy({ where: { spotId: spot.id } });
+  await spotImage.destroy({ where: { spotId: spot.id } });
+  await Booking.destroy({ where: { spotId: spot.id } });
   await spot.destroy();
   return res.status(200).json({
     message: 'Successful deletion',
@@ -394,24 +406,10 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
   }
   const { startDate, endDate } = req.body;
   const currDate = new Date();
-  const parseStart = new Date(startDate);
-  const parseEnd = new Date(endDate);
-
-  if (parseStart < currDate || parseEnd < currDate) {
-    return res.status(400).json({
-      message: 'Dates in the past',
-      errors: {
-        startDate: "Start date can't be in the past",
-        endDate: "End date can't be in the past",
-      },
-    });
-  }
-
-  if (parseEnd <= parseStart) {
-    return res.status(400).json({
-      message: "End date can't be on or before startDate",
-    });
-  }
+  const parseStartDate = new Date(startDate);
+  const parseEndDate = new Date(endDate);
+  const parseStart = startDate;
+  const parseEnd = endDate;
 
   const existingBookings = await Booking.findOne({
     where: {
@@ -425,15 +423,6 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       },
     },
   });
-  if (existingBookings) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        startDate: 'Start date conflicts with an existing booking',
-        endDate: 'End Date conflicts with an existing booking',
-      },
-    });
-  }
   const existingSurroundBookings = await Booking.findOne({
     where: {
       spotId: spotId,
@@ -446,15 +435,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       },
     },
   });
-  if (existingSurroundBookings) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        startDate: 'Start date surrounds an existing booking',
-        endDate: 'End Date surrounds an existing booking',
-      },
-    });
-  }
+
   const existingStartDate = await Booking.findOne({
     where: {
       spotId: spotId,
@@ -464,15 +445,6 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
     },
   });
 
-  if (existingStartDate) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        startDate: 'Start date conflicts with an existing booking start date',
-      },
-    });
-  }
-
   const existingEndDate = await Booking.findOne({
     where: {
       spotId: spotId,
@@ -481,14 +453,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       },
     },
   });
-  if (existingEndDate) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        startDate: 'Start date conflicts with an existing booking end date',
-      },
-    });
-  }
+
   const existingStartDateEnd = await Booking.findOne({
     where: {
       spotId: spotId,
@@ -498,16 +463,6 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
     },
   });
 
-  if (existingStartDateEnd) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        endDate: 'End date conflicts with an existing booking start date',
-      },
-    });
-  }
-
-  // Check if end date of new booking conflicts with existing bookings' end dates
   const existingEndDateEnd = await Booking.findOne({
     where: {
       spotId: spotId,
@@ -517,56 +472,117 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
     },
   });
 
-  if (existingEndDateEnd) {
+  const conflictingBookingProgress = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      [Op.or]: [
+        {
+          startDate: {
+            [Op.lt]: parseEnd,
+          },
+          endDate: {
+            [Op.gt]: parseStart,
+          },
+        },
+        {
+          startDate: {
+            [Op.between]: [parseStart, parseEnd],
+          },
+        },
+        {
+          endDate: {
+            [Op.between]: [parseStart, parseEnd],
+          },
+        },
+      ],
+    },
+  });
+
+  if (startDate === endDate) {
+    return res.status(403).json({
+      message: "Start & End can't be the same",
+    });
+  } else if (parseStartDate < currDate || parseEndDate < currDate) {
+    return res.status(400).json({
+      message: 'Dates in the past',
+      errors: {
+        startDate: "Start date can't be in the past",
+        endDate: "End date can't be in the past",
+      },
+    });
+  } else if (parseEnd <= parseStart) {
+    return res.status(400).json({
+      message: "End date can't be on or before startDate",
+    });
+  } else if (existingBookings) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date within existing booking',
+        endDate: 'End Date within existing booking',
+      },
+    });
+  } else if (existingSurroundBookings) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date surrounds an existing booking',
+        endDate: 'End Date surrounds an existing booking',
+      },
+    });
+  } else if (existingStartDate) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking start date',
+      },
+    });
+  } else if (existingEndDate) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking end date',
+      },
+    });
+  } else if (existingStartDateEnd) {
+    return res.status(403).json({
+      message: 'Booking conflict',
+      errors: {
+        endDate: 'End date conflicts with an existing booking start date',
+      },
+    });
+  } else if (existingEndDateEnd) {
     return res.status(403).json({
       message: 'Booking conflict',
       errors: {
         endDate: 'End date conflicts with an existing booking end date',
       },
     });
+  } else if (conflictingBookingProgress) {
+    if (conflictingBookingProgress.startDate < parseStart) {
+      return res.status(403).json({
+        message: 'Booking conflict',
+        errors: {
+          endDate: 'Start date conflicts with an existing booking in progress',
+        },
+      });
+    }
+    if (conflictingBookingProgress.endDate > parseStart) {
+      return res.status(403).json({
+        message: 'Booking conflict',
+        errors: {
+          endDate: 'End date conflicts with an existing booking in progress',
+        },
+      });
+    }
   }
 
-  const startDuringExisting = await Booking.findOne({
-    where: {
-      spotId: spotId,
-      startDate: {
-        [Op.lt]: parseEnd,
-      },
-    },
+  const newBooking = await Booking.create({
+    spotId: spotId,
+    userId: userId,
+    startDate,
+    endDate,
   });
-  if (startDuringExisting) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        endDate: 'Start date conflicts with an existing booking in progress',
-      },
-    });
-  }
-  const endDuringExisting = await Booking.findOne({
-    where: {
-      spotId: spotId,
-      endDate: {
-        [Op.lte]: parseStart,
-      },
-    },
-  });
-  if (endDuringExisting) {
-    return res.status(403).json({
-      message: 'Booking conflict',
-      errors: {
-        endDate: 'End date conflicts with an existing booking in progress',
-      },
-    });
-  }
-  if (userId !== spot.ownerId) {
-    const newBooking = await Booking.create({
-      spotId: spotId,
-      userId: userId,
-      startDate: parseStart,
-      endDate: parseEnd,
-    });
-
-    return res.status(201).json(newBooking);
-  }
+  return res.status(201).json(newBooking);
 });
 module.exports = router;
