@@ -439,36 +439,28 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
   const existingStartDate = await Booking.findOne({
     where: {
       spotId: spotId,
-      startDate: {
-        [Op.is]: parseStart,
-      },
+      startDate: parseStart,
     },
   });
 
   const existingEndDate = await Booking.findOne({
     where: {
       spotId: spotId,
-      endDate: {
-        [Op.is]: parseStart,
-      },
+      endDate: parseStart,
     },
   });
 
   const existingStartDateEnd = await Booking.findOne({
     where: {
       spotId: spotId,
-      startDate: {
-        [Op.is]: parseEnd,
-      },
+      startDate: parseEnd,
     },
   });
 
   const existingEndDateEnd = await Booking.findOne({
     where: {
       spotId: spotId,
-      endDate: {
-        [Op.is]: parseEnd,
-      },
+      endDate: parseEnd,
     },
   });
 

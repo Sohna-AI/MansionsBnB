@@ -6,7 +6,8 @@ const { validateBooking } = require('../../utils/validation');
 const { Op } = require('sequelize');
 
 router.get('/current', requireAuth, async (req, res) => {
-  const userId = req.user.id;
+  const userIdParam = req.user.id;
+  const userId = parseInt(userIdParam);
   const bookings = await Booking.findAll({
     where: {
       userId: userId,
@@ -39,7 +40,8 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
-  const bookingId = req.params.bookingId;
+  const bookingIdParam = req.params.bookingId;
+  const bookingId = parseInt(bookingIdParam);
   const { startDate, endDate } = req.body;
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
@@ -100,18 +102,6 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
       spotId: spotId,
       endDate: {
         [Op.is]: parseEnd,
-      },
-    },
-  });
-
-  const startDuringExisting = await Booking.findOne({
-    where: {
-      spotId: spotId,
-      [Op.not]: {
-        id: bookingId,
-      },
-      startDate: {
-        [Op.lt]: parseEnd,
       },
     },
   });
@@ -257,7 +247,8 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
 });
 
 router.delete('/:bookingId', requireAuth, async (req, res) => {
-  const bookingId = req.params.bookingId;
+  const bookingIdParam = req.params.bookingId;
+  const bookingId = parseInt(bookingIdParam);
   const userId = req.user.id;
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
