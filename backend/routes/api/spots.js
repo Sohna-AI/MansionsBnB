@@ -148,7 +148,7 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
 
   if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
-      error: 'Unauthorized: Only owner can add an image',
+      error: 'Authorization Required: Only owner can add an image',
     });
   }
 
@@ -196,7 +196,6 @@ router.get('/current', requireAuth, async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [Sequelize.fn('ROUND', Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 1), 'avgRating'],
     ],
     where: {
       ownerId: userId,
@@ -346,7 +345,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   }
   if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
-      error: 'Authorization required: Only the owner can edit the spot',
+      error: 'Authorization Required: Only the owner can edit the spot',
     });
   }
   if (address) spot.address = address;
@@ -389,7 +388,7 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
     return res.status(404).json({ error: "Spot couldn't be found" });
   } else if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
-      error: 'Authorization required: Only the owner can edit the spot',
+      error: 'Authorization Required: Only the owner can edit the spot',
     });
   }
   await Review.destroy({ where: { spotId: spot.id } });

@@ -91,7 +91,7 @@ router.post('/:reviewId/images', requireAuth, validateReviewImage, async (req, r
 
   if (review.userId !== req.user.id) {
     return res.status(403).json({
-      message: 'You are not authorized to add images',
+      message: 'Authorization Required: You are not authorized to add an image',
     });
   }
 
@@ -133,7 +133,7 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
 
   if (findReview.userId !== userId) {
     return res.status(403).json({
-      message: 'You are not authorized to edit this review',
+      message: 'Authorization Required: You are not authorized to edit this review',
     });
   }
 
@@ -169,7 +169,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
   const userId = req.user.id;
   if (findReview.userId !== userId) {
     return res.status(403).json({
-      message: 'You are not authorized to delete this review',
+      message: 'Authorization Required: You are not authorized to delete this review',
     });
   }
 
