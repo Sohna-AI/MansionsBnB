@@ -31,7 +31,7 @@ router.get('/current', requireAuth, async (req, res) => {
   });
   if (!bookings.length) {
     return res.status(404).json({
-      message: 'User has scheduled bookings',
+      message: 'User has no scheduled bookings',
     });
   }
   const responseBooking = await Promise.all(

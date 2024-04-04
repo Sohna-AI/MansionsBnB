@@ -486,9 +486,15 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
 });
 
 router.get('/:spotId/bookings', requireAuth, async (req, res) => {
-  const { spotId } = req.params;
-  const userId = req.user.id;
-  const spot = await Spot.findByPk(spotId);
+  const spotIdParam = req.params.spotId;
+  const spotId = parseInt(spotIdParam);
+  const userId = parseInt(req.user.id);
+  const spot = await Spot.findOne({
+    where: {
+      id: spotId,
+    },
+  });
+
   if (!spot) {
     return res.status(404).json({
       message: "Spot couldn't be found",
@@ -496,7 +502,7 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
   }
   const userBookings = await Booking.findAll({
     where: {
-      userId: userId,
+      spotId: spotId,
     },
     include: [
       {
@@ -505,13 +511,26 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       },
     ],
   });
-
+  const responseUser = await userBookings.map((booking) => {
+    const bookings = booking.toJSON();
+    return {
+      id: bookings.id,
+      spotId: bookings.spotId,
+      userId: bookings.userId,
+      startDate: bookings.startDate,
+      endDate: bookings.endDate,
+      createdAt: bookings.createdAt,
+      updatedAt: bookings.updatedAt,
+      User: bookings.User,
+    };
+  });
   const spotBookings = await Booking.findAll({
     attributes: ['spotId', 'startDate', 'endDate'],
     where: {
       spotId: spotId,
     },
   });
+
   if (!spotBookings.length) {
     return res.status(404).json({
       message: 'Spot has no scheduled Bookings',
@@ -521,8 +540,10 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       message: 'User has no scheduled Bookings',
     });
   } else if (userId === spot.ownerId) {
-    return res.status(200).json({ Bookings: userBookings });
-  } else return res.status(200).json({ Bookings: spotBookings });
+    return res.status(200).json({ Bookings: responseUser });
+  } else if (userId !== spot.ownerId) {
+    return res.status(200).json({ Bookings: spotBookings });
+  }
 });
 
 router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) => {
