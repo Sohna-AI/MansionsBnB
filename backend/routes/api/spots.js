@@ -171,11 +171,8 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
     });
     return res.status(201).json({
       id: newImage.id,
-      spotId: newImage.spotId,
       url: newImage.url,
       preview: newImage.preview,
-      createdAt: newImage.createdAt,
-      updatedAt: newImage.updatedAt,
     });
   }
 });
@@ -524,8 +521,8 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       message: 'User has no scheduled Bookings',
     });
   } else if (userId === spot.ownerId) {
-    return res.status(200).json(userBookings);
-  } else return res.status(200).json(spotBookings);
+    return res.status(200).json({ Bookings: userBookings });
+  } else return res.status(200).json({ Bookings: spotBookings });
 });
 
 router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) => {
@@ -637,7 +634,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
 
   if (startDate === endDate) {
     return res.status(403).json({
-      message: "Start & End can't be the same",
+      message: "Start & End dates can't be the same",
     });
   } else if (parseStartDate < currDate || parseEndDate < currDate) {
     return res.status(400).json({
@@ -649,7 +646,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
     });
   } else if (parseEnd <= parseStart) {
     return res.status(400).json({
-      message: "End date can't be on or before startDate",
+      message: "End date can't be on or before start date",
     });
   } else if (existingConflicts) {
     return res.status(403).json({
@@ -708,7 +705,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       return res.status(403).json({
         message: 'Booking conflict',
         errors: {
-          endDate: 'Start date conflicts with an existing booking in progress',
+          startDate: "Start date can't be during an existing booking",
         },
       });
     }
@@ -716,7 +713,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
       return res.status(403).json({
         message: 'Booking conflict',
         errors: {
-          endDate: 'End date conflicts with an existing booking in progress',
+          endDate: "End date can't be during an existing booking",
         },
       });
     }

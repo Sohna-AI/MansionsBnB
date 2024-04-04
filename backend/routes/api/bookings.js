@@ -63,7 +63,7 @@ router.get('/current', requireAuth, async (req, res) => {
       };
     })
   );
-  res.status(200).json(responseBooking);
+  res.status(200).json({ Bookings: responseBooking });
 });
 
 router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
@@ -203,7 +203,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (parseEndDate <= parseStartDate) {
     return res.status(400).json({
-      message: "End date can't be on or before startDate",
+      message: "End date can't be on or before start date",
     });
   } else if (existingConflicts) {
     return res.status(403).json({
@@ -262,7 +262,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
       return res.status(403).json({
         message: 'Booking conflict',
         errors: {
-          endDate: 'Start date conflicts with an existing booking in progress',
+          startDate: "Start date can't be during an existing booking",
         },
       });
     }
@@ -270,7 +270,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
       return res.status(403).json({
         message: 'Booking conflict',
         errors: {
-          endDate: 'End date conflicts with an existing booking in progress',
+          endDate: "End date can't be during an existing booking",
         },
       });
     }
