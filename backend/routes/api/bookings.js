@@ -160,7 +160,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     let errors = {};
     errors.startDate = "Start date can't be in the past";
     if (parseEndDate < currDate) {
-      errors.startDate = "End date can't be in the past";
+      errors.endDate = "End date can't be in the past";
     }
     return res.status(403).json({
       message: 'Dates in the past',
