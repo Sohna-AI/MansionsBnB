@@ -18,25 +18,52 @@ router.get('/current', requireAuth, async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
-        include: [
-          {
-            model: spotImage,
-            attributes: ['url'],
-            where: {
-              preview: true,
-            },
-            as: 'previewImage',
-          },
-        ],
       },
     ],
   });
-  if (!bookings) {
+  const previewImageFind = await spotImage.findOne({
+    attributes: ['url'],
+    where: {
+      preview: true,
+    },
+    as: 'previewImage',
+    required: false,
+  });
+  if (!bookings.length) {
     return res.status(404).json({
-      message: 'No bookings were found for current user',
+      message: 'User has scheduled bookings',
     });
   }
-  res.status(200).json(bookings);
+  const responseBooking = await Promise.all(
+    bookings.map(async (booking) => {
+      const spot = booking.Spot.toJSON();
+      return {
+        id: booking.id,
+        spotId: spot.id,
+        Spot: {
+          id: spot.id,
+          ownerId: spot.ownerId,
+          address: spot.address,
+          city: spot.city,
+          state: spot.state,
+          country: spot.country,
+          lat: spot.lat,
+          lng: spot.lng,
+          name: spot.name,
+          description: spot.description,
+          price: spot.price,
+          avgRating: spot.avgRating,
+          previewImage: previewImageFind.url,
+        },
+        userId: booking.userId,
+        startDate: booking.startDate,
+        endDate: booking.endDate,
+        createdAt: booking.createdAt,
+        updatedAt: booking.updatedAt,
+      };
+    })
+  );
+  res.status(200).json(responseBooking);
 });
 
 router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
@@ -69,6 +96,14 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
       endDate: {
         [Op.gte]: parseEnd,
       },
+    },
+  });
+
+  const existingConflicts = await Booking.findOne({
+    where: {
+      spotId: spotId,
+      startDate: parseStart,
+      endDate: parseEnd,
     },
   });
 
@@ -170,6 +205,14 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     return res.status(400).json({
       message: "End date can't be on or before startDate",
     });
+  } else if (existingConflicts) {
+    return res.status(403).json({
+      message: 'Sorry, this spot is already booked for the specified dates',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking',
+        endDate: 'End date conflicts with an existing booking',
+      },
+    });
   } else if (existingBookings) {
     return res.status(403).json({
       message: 'Booking conflict',
@@ -235,7 +278,15 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     booking.startDate = parseStart;
     booking.endDate = parseEnd;
     await booking.save();
-    res.status(200).json(booking);
+    res.status(200).json({
+      id: booking.id,
+      spotId: booking.spotId,
+      userId: booking.userId,
+      startDate: booking.startDate,
+      endDate: booking.endDate,
+      createdAt: booking.createdAt,
+      updatedAt: booking.updatedAt,
+    });
   }
 });
 

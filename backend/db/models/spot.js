@@ -7,6 +7,7 @@ const {
   validStatesInMexico,
   validStatesInUk,
 } = require('../../utils/validatePlaces');
+const { Sequelize } = require('.');
 module.exports = (sequelize, DataTypes) => {
   class Spot extends Model {
     /**

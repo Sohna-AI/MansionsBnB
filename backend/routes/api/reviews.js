@@ -23,16 +23,6 @@ router.get('/current', requireAuth, async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
-        include: [
-          {
-            model: spotImage,
-            attributes: ['url'],
-            where: {
-              preview: true,
-            },
-            as: 'previewImage',
-          },
-        ],
       },
       {
         model: ReviewImage,
@@ -45,7 +35,47 @@ router.get('/current', requireAuth, async (req, res) => {
       message: 'User has no reviews',
     });
   }
-  return res.status(200).json({ Reviews: reviews });
+  const responseReviews = await Promise.all(
+    reviews.map(async (review) => {
+      const spot = review.Spot.toJSON();
+      const previewImageFind = await spotImage.findOne({
+        attributes: ['url'],
+        where: {
+          spotId: spot.id,
+          preview: true,
+        },
+      });
+      const resReview = {
+        id: review.id,
+        userId: review.userId,
+        spotId: review.spotId,
+        review: review.review,
+        stars: review.stars,
+        createdAt: review.createdAt,
+        updatedAt: review.updatedAt,
+        User: review.User,
+        Spot: {
+          id: spot.id,
+          ownerId: spot.ownerId,
+          address: spot.address,
+          city: spot.city,
+          state: spot.state,
+          country: spot.country,
+          lat: spot.lat,
+          lng: spot.lng,
+          name: spot.name,
+          description: spot.description,
+          price: spot.price,
+        },
+        ReviewImages: review.ReviewImages,
+      };
+      if (previewImageFind) {
+        resReview.Spot.previewImage = previewImageFind.url;
+      }
+      return resReview;
+    })
+  );
+  return res.status(200).json({ Reviews: responseReviews });
 });
 
 router.post('/:reviewId/images', requireAuth, validateReviewImage, async (req, res) => {
@@ -111,13 +141,24 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
   findReview.stars = stars;
   await findReview.save();
 
-  return res.status(200).json(findReview);
+  return res.status(200).json({
+    id: findReview.id,
+    userId: findReview.userId,
+    spotId: findReview.spotId,
+    review: findReview.review,
+    stars: findReview.stars,
+    createdAt: findReview.createdAt,
+    updatedAt: findReview.updatedAt,
+  });
 });
 
 router.delete('/:reviewId', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
-  const userId = req.user.id;
-  const findReview = await Review.findByPk(reviewId);
+  const findReview = await Review.findOne({
+    where: {
+      id: reviewId,
+    },
+  });
 
   if (!findReview) {
     return res.status(404).json({
@@ -125,6 +166,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     });
   }
 
+  const userId = req.user.id;
   if (findReview.userId !== userId) {
     return res.status(403).json({
       message: 'You are not authorized to delete this review',

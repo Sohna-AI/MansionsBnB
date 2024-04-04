@@ -3,8 +3,9 @@ const router = express.Router();
 const { spotImage, Spot } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 
-router.delete('/:imageId', requireAuth, async (req, res) => {
-  const imageId = req.params.imageId;
+router.delete('/:spotImageId', requireAuth, async (req, res) => {
+  const imageId = req.params.spotImageId;
+  console.log(imageId);
   const findSpotImage = await spotImage.findByPk(imageId);
   if (!findSpotImage) {
     return res.status(404).json({
