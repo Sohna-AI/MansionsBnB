@@ -185,7 +185,7 @@ router.get('/current', requireAuth, async (req, res) => {
       message: 'User has no spots',
     });
   }
-  return res.status(200).json(spot);
+  return res.status(200).json({ Spots: spot });
 });
 
 router.get('/:spotId', async (req, res) => {
