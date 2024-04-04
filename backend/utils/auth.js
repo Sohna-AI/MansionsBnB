@@ -10,7 +10,7 @@ const setTokenCookie = (res, user) => {
     email: user.email,
     username: user.username,
   };
-  console.log('ExpiresIn:', expiresIn);
+
   const token = jwt.sign({ data: safeUser }, secret, { expiresIn: parseInt(expiresIn) });
   const isProduction = process.env.NODE_ENV === 'production';
 
@@ -61,4 +61,4 @@ const requireAuth = function (req, _res, next) {
   return next(err);
 };
 
-module.exports = { setTokenCookie, restoreUser, requireAuth};
+module.exports = { setTokenCookie, restoreUser, requireAuth };
