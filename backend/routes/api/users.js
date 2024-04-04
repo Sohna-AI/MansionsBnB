@@ -8,6 +8,35 @@ const router = express.Router();
 
 router.post('/', validateSignup, async (req, res, next) => {
   const { firstName, lastName, email, username, password } = req.body;
+  const existingUserEmail = await User.unscoped().findOne({
+    where: {
+      email: email,
+    },
+  });
+  const existingUserName = await User.unscoped().findOne({
+    where: {
+      username: username,
+    },
+  });
+  if (existingUserEmail) {
+    const error = new Error('Signup failed');
+    error.status = 500;
+    error.title = 'User already exists';
+    error.errors = {
+      email: 'User with that email already exists',
+    };
+    return res.json(error);
+  }
+
+  if (existingUserName) {
+    const error = new Error('Signup failed');
+    error.status = 500;
+    error.title = 'User already exists';
+    error.errors = {
+      email: 'User with that username already exists',
+    };
+    return res.json(error);
+  }
   const hashedPassword = bcrypt.hashSync(password);
   const user = await User.create({
     firstName,
@@ -16,21 +45,6 @@ router.post('/', validateSignup, async (req, res, next) => {
     username,
     hashedPassword,
   });
-
-  const existingUserEmail = await User.unscoped().findOne({
-    where: {
-      email: email,
-    },
-  });
-
-  if (existingUserEmail) {
-    const error = new Error('Signup failed');
-    error.status = 500;
-    error.title = 'User already exists';
-    error.errors = {
-      email: 'User with that email already exists',
-    };
-  }
 
   const safeUser = {
     id: user.id,
