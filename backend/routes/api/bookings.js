@@ -42,7 +42,6 @@ router.get('/current', requireAuth, async (req, res) => {
 router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   const bookingIdParam = req.params.bookingId;
   const bookingId = parseInt(bookingIdParam);
-  const { startDate, endDate } = req.body;
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
     return res.status(404).json({
@@ -50,6 +49,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   }
 
+  const { startDate, endDate } = req.body;
   const spotId = booking.spotId;
   const currDate = new Date();
   const parseStartDate = new Date(startDate);
@@ -75,34 +75,28 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   const existingStartDate = await Booking.findOne({
     where: {
       spotId: spotId,
-      startDate: { [Op.is]: parseStart },
+      startDate: parseStart,
     },
   });
 
   const existingEndDate = await Booking.findOne({
     where: {
       spotId: spotId,
-      endDate: {
-        [Op.is]: parseStart,
-      },
+      endDate: parseStart,
     },
   });
 
   const existingStartDateEnd = await Booking.findOne({
     where: {
       spotId: spotId,
-      startDate: {
-        [Op.is]: parseEnd,
-      },
+      startDate: parseEnd,
     },
   });
 
   const existingEndDateEnd = await Booking.findOne({
     where: {
       spotId: spotId,
-      endDate: {
-        [Op.is]: parseEnd,
-      },
+      endDate: parseEnd,
     },
   });
 
@@ -162,18 +156,17 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     return res.status(403).json({
       message: "Past bookings can't be modified",
     });
-  } else if (startDate && endDate) {
+  } else if (parseStartDate < currDate) {
     let errors = {};
-    if (parseStartDate < currDate) {
-      errors.startDate = "Start date can't be in the past";
-    } else if (parseEndDate < currDate) {
+    errors.startDate = "Start date can't be in the past";
+    if (parseEndDate < currDate) {
       errors.startDate = "End date can't be in the past";
     }
     return res.status(403).json({
       message: 'Dates in the past',
       errors: errors,
     });
-  } else if (endDate && parseEndDate <= parseStart) {
+  } else if (parseEndDate <= parseStartDate) {
     return res.status(400).json({
       message: "End date can't be on or before startDate",
     });
