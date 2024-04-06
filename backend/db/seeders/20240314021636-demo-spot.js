@@ -30,7 +30,7 @@ module.exports = {
         name: 'One57',
         description:
           'This 3 bedroom corner unit features a gracious, windowed entry foyer that leads to a large living/dining room with a top-of-the-line kitchen. The unit has floor-to-ceiling windows throughout that showcase Central Park views to the North and landmark building views to the South & East.',
-        price: 35000.0,
+        price: 35000.57,
       },
       {
         ownerId: 2,
@@ -96,6 +96,9 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    options.truncate = true;
+    options.cascade = true;
+    options.restartIdentity = true;
     await queryInterface.bulkDelete(options, null, {});
   },
 };

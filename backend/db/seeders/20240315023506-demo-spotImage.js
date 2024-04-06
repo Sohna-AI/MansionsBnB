@@ -4,8 +4,8 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 options.validate = true;
-options.tableName = 'spotImages';
-const { spotImage } = require('../models');
+options.tableName = 'SpotImages';
+const { SpotImage } = require('../models');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -35,7 +35,7 @@ module.exports = {
         preview: true,
       },
     ];
-    await spotImage.bulkCreate(demo_spotImage, options);
+    await SpotImage.bulkCreate(demo_spotImage, options);
   },
 
   async down(queryInterface, Sequelize) {
@@ -45,6 +45,9 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    options.truncate = true;
+    options.cascade = true;
+    options.restartIdentity = true;
     await queryInterface.bulkDelete(options, null, {});
   },
 };

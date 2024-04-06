@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notNull: true
-        }
+          notNull: true,
+        },
       },
       createdAt: {
         type: DataTypes.DATE,

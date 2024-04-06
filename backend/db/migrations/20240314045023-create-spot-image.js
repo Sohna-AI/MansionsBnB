@@ -3,12 +3,12 @@ let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
-options.tableName = 'spotImages';
+options.tableName = 'SpotImages';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      'spotImages',
+      'SpotImages',
       {
         id: {
           allowNull: false,

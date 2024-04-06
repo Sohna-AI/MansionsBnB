@@ -1,6 +1,6 @@
 'use strict';
 let options = {};
-options.tableName = 'spotImages';
+options.tableName = 'SpotImages';
 
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;

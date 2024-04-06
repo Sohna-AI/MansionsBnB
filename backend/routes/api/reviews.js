@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Review, Spot, ReviewImage, spotImage, sequelize } = require('../../db/models');
+const { User, Review, Spot, ReviewImage, SpotImage, sequelize } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { validateReview, validateReviewImage } = require('../../utils/validation');
 
@@ -31,14 +31,18 @@ router.get('/current', requireAuth, async (req, res) => {
     ],
   });
   if (!reviews.length) {
-    return res.status(200).json({
-      message: 'User has no reviews',
+    return res.status(404).json({
+      title: "User's reviews",
+      message: "User's reviews",
+      errors: {
+        message: 'User has not reviewed any spots',
+      },
     });
   }
   const responseReviews = await Promise.all(
     reviews.map(async (review) => {
       const spot = review.Spot.toJSON();
-      const previewImageFind = await spotImage.findOne({
+      const previewImageFind = await SpotImage.findOne({
         attributes: ['url'],
         where: {
           spotId: spot.id,
@@ -85,13 +89,21 @@ router.post('/:reviewId/images', requireAuth, validateReviewImage, async (req, r
 
   if (!review) {
     return res.status(404).json({
-      message: "Review couldn't be found",
+      title: 'Review image creation failed',
+      message: 'Review not found',
+      errors: {
+        message: 'Requested review does not exist',
+      },
     });
   }
 
   if (review.userId !== req.user.id) {
     return res.status(403).json({
-      message: 'Authorization Required: You are not authorized to add an image',
+      title: 'Review image creation failed',
+      message: 'Authorization Required',
+      error: {
+        message: 'You are not authorized to add an image',
+      },
     });
   }
 
@@ -104,7 +116,11 @@ router.post('/:reviewId/images', requireAuth, validateReviewImage, async (req, r
   const maxImage = 10;
   if (imageCount === maxImage) {
     return res.status(403).json({
-      message: 'Maximum number of images for this resource was reached',
+      title: 'Review image creation failed',
+      message: 'Maximum number of review images',
+      errors: {
+        message: 'Maximum number of images for this resource was reached',
+      },
     });
   }
   if (imageCount < 10) {
@@ -127,13 +143,21 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
 
   if (!findReview) {
     return res.status(404).json({
-      message: "Review couldn't be found",
+      title: 'Review editing failed',
+      message: 'Review not found',
+      errors: {
+        message: 'Requestion review does not exist',
+      },
     });
   }
 
   if (findReview.userId !== userId) {
     return res.status(403).json({
-      message: 'Authorization Required: You are not authorized to edit this review',
+      title: 'Review editing failed',
+      message: 'Authorization Required',
+      errors: {
+        message: 'You are not authorized to edit this review',
+      },
     });
   }
 
@@ -162,14 +186,22 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
 
   if (!findReview) {
     return res.status(404).json({
-      message: "Review couldn't be found",
+      title: 'Review deletion failed',
+      message: 'Review not found',
+      errors: {
+        message: 'Requested review does not exist',
+      },
     });
   }
 
   const userId = req.user.id;
   if (findReview.userId !== userId) {
     return res.status(403).json({
-      message: 'Authorization Required: You are not authorized to delete this review',
+      title: 'Review deletion failed',
+      message: 'Authorization Required',
+      errors: {
+        message: "You are not authorized to delete this review'",
+      },
     });
   }
 

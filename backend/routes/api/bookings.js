@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Booking, Spot, spotImage } = require('../../db/models');
+const { Booking, Spot, SpotImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { validateBooking } = require('../../utils/validation');
 const { Op } = require('sequelize');
@@ -21,7 +21,7 @@ router.get('/current', requireAuth, async (req, res) => {
       },
     ],
   });
-  const previewImageFind = await spotImage.findOne({
+  const previewImageFind = await SpotImage.findOne({
     attributes: ['url'],
     where: {
       preview: true,
@@ -31,7 +31,11 @@ router.get('/current', requireAuth, async (req, res) => {
   });
   if (!bookings.length) {
     return res.status(404).json({
-      message: 'User has no scheduled bookings',
+      title: 'Bookings search',
+      message: 'Bookings not found',
+      errors: {
+        message: 'User has no scheduled bookings',
+      },
     });
   }
   const responseBooking = await Promise.all(
@@ -72,7 +76,11 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
     return res.status(404).json({
-      message: "Booking couldn't be found.",
+      title: 'Booking modification failed',
+      message: 'Booking not found',
+      errors: {
+        message: 'Requested booking does not exist',
+      },
     });
   }
 
@@ -181,15 +189,29 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
 
   if (req.user.id !== booking.userId) {
     return res.status(403).json({
-      error: 'Authorization required: Booking can only edited by authorized User',
+      title: 'Booking modification failed',
+      message: 'Authorization required',
+      errors: {
+        message: 'Booking can only edited by authorized User',
+      },
     });
   } else if (startDate === endDate) {
     return res.status(400).json({
-      message: "Start & End dates can't be the same",
+      title: 'Booking modification failed',
+      message: 'Booking conflict',
+      errors: {
+        startDate: "Start date can't be the same as end date",
+        endDate: "End date can't be the same as start date",
+      },
     });
   } else if (currDate > parseEnd) {
     return res.status(403).json({
-      message: "Past bookings can't be modified",
+      title: 'Booking modification failed',
+      message: 'Booking conflict',
+      errors: {
+        startDate: 'Start date of the booking is in the past',
+        endDate: 'End date of the booking is in the past',
+      },
     });
   } else if (parseStartDate < currDate) {
     let errors = {};
@@ -198,16 +220,22 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
       errors.endDate = "End date can't be in the past";
     }
     return res.status(403).json({
-      message: 'Dates in the past',
+      title: 'Booking modification failed',
+      message: 'Booking conflict',
       errors: errors,
     });
   } else if (parseEndDate <= parseStartDate) {
     return res.status(400).json({
-      message: "End date can't be on or before start date",
+      title: 'Booking modification failed',
+      message: 'Booking Conflict',
+      errors: {
+        endDate: "End date can't be on or before start date",
+      },
     });
   } else if (existingConflicts) {
     return res.status(403).json({
-      message: 'Sorry, this spot is already booked for the specified dates',
+      title: 'Booking modification failed',
+      message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking',
         endDate: 'End date conflicts with an existing booking',
@@ -215,6 +243,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingBookings) {
     return res.status(403).json({
+      title: 'Booking modification failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date within existing booking',
@@ -223,6 +252,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingSurroundBookings) {
     return res.status(403).json({
+      title: 'Booking modification failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date surrounds an existing booking',
@@ -231,6 +261,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingStartDate) {
     return res.status(403).json({
+      title: 'Booking modification failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking start date',
@@ -238,6 +269,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingEndDate) {
     return res.status(403).json({
+      title: 'Booking modification failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking end date',
@@ -245,6 +277,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingStartDateEnd) {
     return res.status(403).json({
+      title: 'Booking modification failed',
       message: 'Booking conflict',
       errors: {
         endDate: 'End date conflicts with an existing booking start date',
@@ -252,6 +285,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingEndDateEnd) {
     return res.status(403).json({
+      title: 'Booking modification failed',
       message: 'Booking conflict',
       errors: {
         endDate: 'End date conflicts with an existing booking end date',
@@ -260,6 +294,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   } else if (startEndProgress) {
     if (startEndProgress.startDate < parseStart) {
       return res.status(403).json({
+        title: 'Booking modification failed',
         message: 'Booking conflict',
         errors: {
           startDate: "Start date can't be during an existing booking",
@@ -268,6 +303,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     }
     if (startEndProgress.endDate > parseStart) {
       return res.status(403).json({
+        title: 'Booking modification failed',
         message: 'Booking conflict',
         errors: {
           endDate: "End date can't be during an existing booking",
@@ -297,7 +333,10 @@ router.delete('/:bookingId', requireAuth, async (req, res) => {
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
     return res.status(404).json({
-      message: "Booking couldn't be found",
+      message: 'Booking deletion failed',
+      errors: {
+        message: 'Requested booking does not exist',
+      },
     });
   }
   const currDate = new Date();
@@ -305,19 +344,29 @@ router.delete('/:bookingId', requireAuth, async (req, res) => {
   const parseEnd = new Date(booking.endDate);
 
   const spot = await Spot.findByPk(booking.spotId);
-  const isBookingOwner = spot.ownerId === userId;
-  const isSpotOwner = booking.userId === userId;
+  const isSpotOwner = spot.ownerId === userId;
+  const isBookingOwner = booking.userId === userId;
   if (currDate >= parseStart && currDate <= parseEnd) {
     return res.status(400).json({
-      message: "Bookings that have been started can't be deleted",
+      message: 'Booking deletion failed',
+      errors: {
+        message: "Started bookings can't be deleted",
+      },
     });
   } else if (currDate >= parseEnd) {
     return res.status(400).json({
-      message: "Bookings in the past can't be deleted",
+      message: 'Booking deletion failed',
+      errors: {
+        message: "Bookings in the past can't be deleted",
+      },
     });
   } else if (!isBookingOwner && !isSpotOwner) {
     return res.status(403).json({
-      message: 'Authorization required: Not an Owner of the spot or the User on the Booking',
+      title: 'Booking deletion failed',
+      message: 'Authorization required',
+      errors: {
+        message: 'Not an owner of the spot or an authorized user on the booking',
+      },
     });
   }
   await booking.destroy();

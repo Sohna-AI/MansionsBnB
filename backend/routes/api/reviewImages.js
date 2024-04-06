@@ -8,14 +8,22 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
   const findReviewImage = await ReviewImage.findByPk(imageId);
   if (!findReviewImage) {
     return res.status(404).json({
-      message: "Review Image couldn't be found",
+      title: 'Review image search',
+      message: 'Review image not found',
+      errors: {
+        message: 'Requested review image does not exist',
+      },
     });
   }
 
   const findReview = await Review.findByPk(findReviewImage.reviewId);
   if (findReview.userId !== req.user.id) {
     return res.status(403).json({
-      message: 'Authorization required: Only the authorized User can delete this image',
+      title: 'Review deletion failed',
+      message: 'Authorization required',
+      errors: {
+        message: 'Only the authorized User can delete this image',
+      },
     });
   } else {
     findReviewImage.destroy();
