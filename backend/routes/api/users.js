@@ -20,7 +20,7 @@ router.post('/', validateSignup, async (req, res, next) => {
   });
   if (existingUserEmail) {
     const error = new Error('Signup failed');
-    error.title = 'User already exists';
+    error.message = 'User already exists';
     error.errors = {
       email: 'User with that email already exists',
     };
@@ -29,9 +29,9 @@ router.post('/', validateSignup, async (req, res, next) => {
 
   if (existingUserName) {
     const error = new Error('Signup failed');
-    error.title = 'User already exists';
+    error.message = 'User already exists';
     error.errors = {
-      email: 'User with that username already exists',
+      username: 'User with that username already exists',
     };
     return res.status(500).json(error);
   }
