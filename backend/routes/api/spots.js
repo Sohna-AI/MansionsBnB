@@ -366,7 +366,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   if (!spot) {
     return res.status(404).json({
-      title: 'Spot modification failed',
+      title: 'Spot editing failed',
       message: 'Spot not found',
       errors: {
         message: 'Requested spot does not exist',
@@ -375,7 +375,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
   }
   if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
-      title: 'Spot modification failed',
+      title: 'Spot editing failed',
       message: 'Authorization Required',
       error: {
         message: 'Only the owner can edit the spot',

@@ -76,7 +76,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
     return res.status(404).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking not found',
       errors: {
         message: 'Requested booking does not exist',
@@ -189,7 +189,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
 
   if (req.user.id !== booking.userId) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Authorization required',
       errors: {
         message: 'Booking can only edited by authorized User',
@@ -197,7 +197,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (startDate === endDate) {
     return res.status(400).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: "Start date can't be the same as end date",
@@ -206,7 +206,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (currDate > parseEnd) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date of the booking is in the past',
@@ -220,13 +220,13 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
       errors.endDate = "End date can't be in the past";
     }
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: errors,
     });
   } else if (parseEndDate <= parseStartDate) {
     return res.status(400).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking Conflict',
       errors: {
         endDate: "End date can't be on or before start date",
@@ -234,7 +234,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingConflicts) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking',
@@ -243,7 +243,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingBookings) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date within existing booking',
@@ -252,7 +252,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingSurroundBookings) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date surrounds an existing booking',
@@ -261,7 +261,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingStartDate) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking start date',
@@ -269,7 +269,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingEndDate) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         startDate: 'Start date conflicts with an existing booking end date',
@@ -277,7 +277,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingStartDateEnd) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         endDate: 'End date conflicts with an existing booking start date',
@@ -285,7 +285,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     });
   } else if (existingEndDateEnd) {
     return res.status(403).json({
-      title: 'Booking modification failed',
+      title: 'Booking editing failed',
       message: 'Booking conflict',
       errors: {
         endDate: 'End date conflicts with an existing booking end date',
@@ -294,7 +294,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   } else if (startEndProgress) {
     if (startEndProgress.startDate < parseStart) {
       return res.status(403).json({
-        title: 'Booking modification failed',
+        title: 'Booking editing failed',
         message: 'Booking conflict',
         errors: {
           startDate: "Start date can't be during an existing booking",
@@ -303,7 +303,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
     }
     if (startEndProgress.endDate > parseStart) {
       return res.status(403).json({
-        title: 'Booking modification failed',
+        title: 'Booking editing failed',
         message: 'Booking conflict',
         errors: {
           endDate: "End date can't be during an existing booking",
