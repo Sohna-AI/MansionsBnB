@@ -144,7 +144,7 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
 
   if (!spot) {
     return res.status(404).json({
-      title: 'Creating Spot Image failed',
+      title: 'Spot Image creation failed',
       message: 'Spots does not exists',
       errors: {
         message: `Spot not found for id ${spotId}`,
@@ -154,7 +154,7 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
 
   if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
-      title: 'Creating Spot Image failed',
+      title: 'Spot Image creation failed',
       message: 'Authorization required',
       errors: {
         message: 'Only owner can add an image',
@@ -171,7 +171,7 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
 
   if (spotImg) {
     return res.status(403).json({
-      title: 'Creating Spot Image failed',
+      title: 'Spot Image creation failed',
       message: "Spot's preview image",
       errors: {
         message: "Can't have more than 1 preview image",
