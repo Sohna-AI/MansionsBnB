@@ -146,9 +146,9 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
   if (!spot) {
     return res.status(404).json({
       title: 'Spot Image creation failed',
-      message: 'Spots does not exists',
+      message: 'Spot not found',
       errors: {
-        message: `Spot not found for id ${spotId}`,
+        message: 'Requested spot does not exist',
       },
     });
   }
