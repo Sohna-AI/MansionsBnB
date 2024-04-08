@@ -31,7 +31,7 @@ router.get('/current', requireAuth, async (req, res) => {
   });
   if (!bookings.length) {
     return res.status(404).json({
-      title: 'Bookings search',
+      title: "User's bookings",
       message: 'Bookings not found',
       errors: {
         message: 'User has no scheduled bookings',
@@ -333,7 +333,8 @@ router.delete('/:bookingId', requireAuth, async (req, res) => {
   const booking = await Booking.findByPk(bookingId);
   if (!booking) {
     return res.status(404).json({
-      message: 'Booking deletion failed',
+      title: 'Booking deletion failed',
+      message: 'Booking not found',
       errors: {
         message: 'Requested booking does not exist',
       },
@@ -348,14 +349,16 @@ router.delete('/:bookingId', requireAuth, async (req, res) => {
   const isBookingOwner = booking.userId === userId;
   if (currDate >= parseStart && currDate <= parseEnd) {
     return res.status(400).json({
-      message: 'Booking deletion failed',
+      title: 'Booking deletion failed',
+      message: 'Booking has been started',
       errors: {
         message: "Started bookings can't be deleted",
       },
     });
   } else if (currDate >= parseEnd) {
     return res.status(400).json({
-      message: 'Booking deletion failed',
+      title: 'Booking deletion failed',
+      message: 'Booking has been completed',
       errors: {
         message: "Bookings in the past can't be deleted",
       },

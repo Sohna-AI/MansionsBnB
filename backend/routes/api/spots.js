@@ -475,7 +475,7 @@ router.get('/:spotId/reviews', async (req, res) => {
   if (!reviews.length) {
     return res.status(404).json({
       title: 'Spot reviews',
-      message: 'No reviews',
+      message: 'Spot has not been reviewed',
       errors: {
         message: 'Spot does not have any reviews',
       },
@@ -582,6 +582,7 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
   const responseUser = await userBookings.map((booking) => {
     const bookings = booking.toJSON();
     return {
+      User: bookings.User,
       id: bookings.id,
       spotId: bookings.spotId,
       userId: bookings.userId,
@@ -589,7 +590,6 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
       endDate: bookings.endDate,
       createdAt: bookings.createdAt,
       updatedAt: bookings.updatedAt,
-      User: bookings.User,
     };
   });
   const spotBookings = await Booking.findAll({
@@ -601,15 +601,15 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
 
   if (!spotBookings.length) {
     return res.status(404).json({
-      title: "Spot's bookings search",
-      message: 'Bookings not found',
+      title: "Spot's bookings",
+      message: 'Spot has no ',
       errors: {
         message: 'Spot has no scheduled bookings',
       },
     });
   } else if (!userBookings.length) {
     return res.status(404).json({
-      title: "User's bookings search",
+      title: "User's bookings",
       message: 'Bookings not found',
       errors: {
         message: 'User has no scheduled bookings',
@@ -639,7 +639,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res) 
   if (spot.ownerId === userId) {
     return res.status(403).json({
       title: 'Booking creation failed',
-      message: 'Booking conflict',
+      message: 'Authorization Required',
       errors: {
         message: "Spot can't be booked by the spot owner",
       },

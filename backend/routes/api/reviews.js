@@ -33,7 +33,7 @@ router.get('/current', requireAuth, async (req, res) => {
   if (!reviews.length) {
     return res.status(404).json({
       title: "User's reviews",
-      message: "User's reviews",
+      message: 'User has not reviewed spots',
       errors: {
         message: 'User has not reviewed any spots',
       },
