@@ -190,7 +190,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req, res) => {
   if (req.user.id !== booking.userId) {
     return res.status(403).json({
       title: 'Booking editing failed',
-      message: 'Authorization required',
+      message: 'Authorization Required',
       errors: {
         message: 'Booking can only edited by authorized User',
       },
@@ -366,7 +366,7 @@ router.delete('/:bookingId', requireAuth, async (req, res) => {
   } else if (!isBookingOwner && !isSpotOwner) {
     return res.status(403).json({
       title: 'Booking deletion failed',
-      message: 'Authorization required',
+      message: 'Authorization Required',
       errors: {
         message: 'Not an owner of the spot or an authorized user on the booking',
       },

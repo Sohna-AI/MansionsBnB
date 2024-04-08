@@ -20,7 +20,7 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
   if (findReview.userId !== req.user.id) {
     return res.status(403).json({
       title: 'Review deletion failed',
-      message: 'Authorization required',
+      message: 'Authorization Required',
       errors: {
         message: 'Only the authorized User can delete this image',
       },

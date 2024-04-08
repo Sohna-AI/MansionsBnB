@@ -22,7 +22,7 @@ router.delete('/:spotImageId', requireAuth, async (req, res) => {
   if (spot.ownerId !== req.user.id) {
     return res.status(403).json({
       title: 'Spot image deletion failed',
-      message: 'Authorization required',
+      message: 'Authorization Required',
       errors: {
         message: "Only the owner can delete this image'",
       },

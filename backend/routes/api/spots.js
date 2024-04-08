@@ -156,7 +156,7 @@ router.post('/:spotId/images', requireAuth, validateSpotImage, async (req, res) 
   if (req.user.id !== spot.ownerId) {
     return res.status(403).json({
       title: 'Spot Image creation failed',
-      message: 'Authorization required',
+      message: 'Authorization Required',
       errors: {
         message: 'Only owner can add an image',
       },
