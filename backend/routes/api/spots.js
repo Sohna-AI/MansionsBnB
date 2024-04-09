@@ -75,7 +75,6 @@ router.get('/', validateQueryParams, async (req, res) => {
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
       };
-      console.log(responseSpot.lat);
       const avgRating = await calculateAverageRating(spot.id);
       if (avgRating > 0 && avgRating !== null) {
         responseSpot.avgRating = avgRating;
