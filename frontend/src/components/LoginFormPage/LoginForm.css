@@ -1,14 +1,19 @@
 .form {
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
-  
 }
 
 input {
   max-width: min-content;
 }
 
+label,
+input {
+  padding-bottom: 2px;
+  margin-bottom: 8px;
+}
+
 .log-in-button {
-    max-width: fit-content;
+  max-width: fit-content;
+  margin-top: 10px;
 }
