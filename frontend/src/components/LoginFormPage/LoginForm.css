@@ -1,0 +1,14 @@
+.form {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  
+}
+
+input {
+  max-width: min-content;
+}
+
+.log-in-button {
+    max-width: fit-content;
+}
