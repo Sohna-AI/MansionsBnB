@@ -24,15 +24,36 @@ const LoginFormPage = () => {
 
   return (
     <>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit} className='form'>
-        <label>Username or Email</label>
-        <input type="text" value={credential} onChange={(e) => setCredential(e.target.value)} required />
-        <label>Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        {errors.credential && <p>{errors.credential}</p>}
-        <button type="submit" className='log-in-button'>Log In</button>
-      </form>
+      <div className="login-page-container">
+        <div className="login-page">
+          <h1 className="login-title">Login</h1>
+          <form onSubmit={handleSubmit} className="form">
+            <div className="login-form-group">
+              <label className="login-sub-title">Username or Email</label>
+              <input
+                className="login-form-style"
+                type="text"
+                value={credential}
+                onChange={(e) => setCredential(e.target.value)}
+                required
+              />
+            </div>
+            <div className="login-form-group">
+              <label className="login-sub-title">Password</label>
+              <input
+                className="login-form-style"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {errors.credential && <p>{errors.credential}</p>}
+            </div>
+            <button type="submit" className="login-button">
+              Log In
+            </button>
+          </form>
+        </div>
+      </div>
     </>
   );
 };

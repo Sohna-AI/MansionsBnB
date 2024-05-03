@@ -45,14 +45,14 @@ const SignupFormPage = () => {
     <>
       <div className="signup-page-container">
         <div className="signup-page">
-          <h1 className="title">Sign Up</h1>
+          <h1 className="signup-title">Sign Up</h1>
           <form onSubmit={handleSubmit} className="signup-form">
-            <div className="form-group">
-              <label className="sub-title">
+            <div className="signup-form-group">
+              <label className="signup-sub-title">
                 Email
                 <br />
                 <input
-                  className="form-style"
+                  className="signup-form-style"
                   type="email"
                   placeholder="Provide a email"
                   value={email}
@@ -62,12 +62,12 @@ const SignupFormPage = () => {
               </label>
               {errors.email && <p>{errors.email}</p>}
             </div>
-            <div className="form-group">
-              <label className="sub-title">
+            <div className="signup-form-group">
+              <label className="signup-sub-title">
                 Username
                 <br />
                 <input
-                  className="form-style"
+                  className="signup-form-style"
                   type="text"
                   placeholder="Provide a username"
                   value={username}
@@ -77,12 +77,12 @@ const SignupFormPage = () => {
               </label>
               {errors.username && <p>{errors.username}</p>}
             </div>
-            <div className="form-group">
-              <label className="sub-title">
+            <div className="signup-form-group">
+              <label className="signup-sub-title">
                 First Name
                 <br />
                 <input
-                  className="form-style"
+                  className="signup-form-style"
                   type="text"
                   placeholder="Provide your first name"
                   value={firstName}
@@ -92,12 +92,12 @@ const SignupFormPage = () => {
               </label>
               {errors.firstName && <p>{errors.firstName}</p>}
             </div>
-            <div className="form-group">
-              <label className="sub-title">
+            <div className="signup-form-group">
+              <label className="signup-sub-title">
                 Last Name
                 <br />
                 <input
-                  className="form-style"
+                  className="signup-form-style"
                   type="text"
                   placeholder="Provide your last name"
                   value={lastName}
@@ -107,12 +107,12 @@ const SignupFormPage = () => {
               </label>
               {errors.lastName && <p>{errors.lastName}</p>}
             </div>
-            <div className="form-group">
-              <label className="sub-title">
+            <div className="signup-form-group">
+              <label className="signup-sub-title">
                 Password
                 <br />
                 <input
-                  className="form-style"
+                  className="signup-form-style"
                   type="password"
                   placeholder="Create a password"
                   value={password}
@@ -122,12 +122,12 @@ const SignupFormPage = () => {
               </label>
               {errors.password && <p>{errors.password}</p>}
             </div>
-            <div className="form-group">
-              <label className="sub-title">
+            <div className="signup-form-group">
+              <label className="signup-sub-title">
                 Confirm Password
                 <br />
                 <input
-                  className="form-style"
+                  className="signup-form-style"
                   type="password"
                   placeholder="Confirm your password"
                   value={confirmPassword}

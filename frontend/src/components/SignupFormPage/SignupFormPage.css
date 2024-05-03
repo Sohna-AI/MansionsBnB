@@ -13,19 +13,19 @@
   flex-direction: column;
   background-color: #eddcd9;
   height: auto;
-  width: 350px;
+  width: auto;
   border: 2px solid #264143;
   border-radius: 20px;
   box-shadow: 3px 4px 0px 1px #e99f4c;
 }
 
-.title {
+.signup-title {
   color: #264143;
   font-weight: 900;
   font-size: 1.5em;
   margin-top: 20px;
 }
-.sub-title {
+.signup-sub-title {
   font-weight: 600;
   margin: 5px 0;
   display: flex;
@@ -33,24 +33,24 @@
   align-items: baseline;
 }
 
-.form-group {
+.signup-form-group {
   display: flex;
   flex-direction: column;
   align-items: baseline;
   margin: 10px;
 }
 
-.form-style {
+.signup-form-style {
   outline: none;
   border: 2px solid #264143;
   box-shadow: 3px 4px 0px 1px #e99f4c;
-  width: 500px;
+  width: 290px;
   padding: 12px 10px;
   border-radius: 4px;
   font-size: 15px;
 }
 
-.form-style:focus,
+.signup-form-style:focus,
 .signup-button:focus {
   transform: translateY(4px);
   box-shadow: 1px 2px 0px 0px #e99f4c;
