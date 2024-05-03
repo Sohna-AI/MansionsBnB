@@ -1,0 +1,15 @@
+.nav-links {
+  display: flex;
+}
+
+.nav {
+  border: 1px solid gray;
+  background-color: #de5499;
+  text-decoration: none;
+  color: white;
+  margin-right: 10px;
+  padding: 8px 16px;
+}
+ul {
+  list-style: none;
+}
