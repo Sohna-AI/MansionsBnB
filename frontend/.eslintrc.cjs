@@ -12,10 +12,15 @@ module.exports = {
   plugins: ['react-refresh'],
   ignorePatterns: ['dist', 'node_modules'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
-    'react/prop-types': 'off'
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    'react/prop-types': 'off',
   },
-}
+  overrides: [
+    {
+      files: ['src/context/*.jsx'],
+      rules: {
+        'react-refresh/only-export-components': 'off',
+      },
+    },
+  ],
+};

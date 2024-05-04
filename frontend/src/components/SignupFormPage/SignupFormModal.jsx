@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import * as sessionActions from '../../store/session';
 import './SignupFormPage.css';
 
-const SignupFormPage = () => {
+const SignupFormModal = () => {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
   const [email, setEmail] = useState('');
@@ -147,4 +147,4 @@ const SignupFormPage = () => {
   );
 };
 
-export default SignupFormPage;
+export default SignupFormModal;
