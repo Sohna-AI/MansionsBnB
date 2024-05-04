@@ -22,7 +22,7 @@ const Navigation = ({ isLoaded }) => {
                 : { color: '#fff', background: '#de5499' }
             }
           >
-            Home
+            MansionsBnB
           </NavLink>
         </li>
         {isLoaded && (
