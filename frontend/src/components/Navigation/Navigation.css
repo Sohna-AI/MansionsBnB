@@ -13,8 +13,3 @@
 ul {
   list-style: none;
 }
-
-li:active {
-  background-color: #de5499;
-  color: white;
-}
