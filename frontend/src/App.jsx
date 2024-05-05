@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import * as sessionActions from './store/session';
 import Navigation from './components/Navigation/Navigation';
 import Spots from './components/Spots/Spots';
+import LandingPage from './components/LandingPage/LandingPage';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,8 @@ const Layout = () => {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route path="/" element={<Spots />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/spots" element={<Spots />} />
     </Route>
   )
 );

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
+import logo from '../../../../images/logo.png';
 import './Navigation.css';
 
 const Navigation = ({ isLoaded }) => {
@@ -10,19 +11,8 @@ const Navigation = ({ isLoaded }) => {
     <div className="nav-container">
       <ul className="nav-links">
         <li>
-          <NavLink
-            to="/"
-            className="nav"
-            style={({ isActive }) =>
-              isActive
-                ? {
-                    color: '#fff',
-                    background: '#e99f4c',
-                  }
-                : { color: '#fff', background: '#de5499' }
-            }
-          >
-            MansionsBnB
+          <NavLink to="/">
+            <img src={logo} className="logo-image" />
           </NavLink>
         </li>
         {isLoaded && (
