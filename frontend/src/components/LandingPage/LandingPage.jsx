@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import landing_page from '../../../../images/landing-page.png';
 import './LandingPage.css';
 
