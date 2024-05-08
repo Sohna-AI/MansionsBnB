@@ -293,7 +293,6 @@ router.get('/:spotId', async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
-      [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
     ],
     include: [
       {
@@ -319,6 +318,7 @@ router.get('/:spotId', async (req, res) => {
       },
     });
   }
+
   const response = {
     id: spot.id,
     ownerId: spot.ownerId,
@@ -333,8 +333,20 @@ router.get('/:spotId', async (req, res) => {
     price: Number(spot.price),
     createdAt: spot.createdAt,
     updatedAt: spot.updatedAt,
-    numReviews: spot.numReviews,
   };
+
+  const reviewCount = await Review.count({
+    where: {
+      spotId: spotId,
+    },
+  });
+
+  if (!reviewCount) {
+    response.numReviews = 'Spot has no reviews';
+  } else {
+    response.numReviews = reviewCount;
+  }
+
   const avgRating = await calculateAverageRating(spot.id);
   if (avgRating > 0 && avgRating !== null) {
     response.avgRating = avgRating;
