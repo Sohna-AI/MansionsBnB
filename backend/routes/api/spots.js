@@ -333,6 +333,7 @@ router.get('/:spotId', async (req, res) => {
     price: Number(spot.price),
     createdAt: spot.createdAt,
     updatedAt: spot.updatedAt,
+    numReviews: spot.numReviews,
   };
   const avgRating = await calculateAverageRating(spot.id);
   if (avgRating > 0 && avgRating !== null) {

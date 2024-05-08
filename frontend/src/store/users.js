@@ -1,0 +1,2 @@
+const LOAD = 'users/LOAD'
+

@@ -4,6 +4,7 @@
   border: 1px solid gray;
   box-shadow: 2px 2px 10px 2px black;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .spots-page {

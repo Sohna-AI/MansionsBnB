@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getSpots } from '../../store/spots';
 import { IoStar } from 'react-icons/io5';
 import './Spots.css';
+import { NavLink, Outlet, useParams } from 'react-router-dom';
 
 const Spots = () => {
   const dispatch = useDispatch();
-  const allSpots = useSelector((state) => state.spots).list;
+  const allSpots = useSelector((state) => state.spots);
+  const spots = allSpots.list.map((spotId) => allSpots[spotId]);
 
   useEffect(() => {
     dispatch(getSpots());
@@ -18,9 +20,16 @@ const Spots = () => {
         <h1>Available Properties:</h1>
         <div className="spots-page-container">
           <ul className="spots-page">
-            {allSpots.map((spot) => (
+            {spots.map((spot) => (
               <li key={spot.id} className="single-spot">
-                <img className="spots-preview-image" src={spot.previewImage} alt={spot.name} />
+                <NavLink key={spot.id} to={`/spots/${spot.id}`}>
+                  <img
+                    className="spots-preview-image"
+                    src={spot.previewImage}
+                    alt={spot.name}
+                    title={spot.name}
+                  />
+                </NavLink>
                 <div className="spot-info-container">
                   <div className="spot-info">
                     {spot.city}, {spot.state}
@@ -39,6 +48,7 @@ const Spots = () => {
             ))}
           </ul>
         </div>
+        <Outlet />
       </main>
     </>
   );

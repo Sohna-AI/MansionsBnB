@@ -11,6 +11,7 @@ import * as sessionActions from './store/session';
 import Navigation from './components/Navigation/Navigation';
 import Spots from './components/Spots/Spots';
 import LandingPage from './components/LandingPage/LandingPage';
+import SpotsDetails from './components/SpotsDetails/SpotsDetails';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<Layout />}>
       <Route path="/" element={<LandingPage />} />
       <Route path="/spots" element={<Spots />} />
+      <Route path="/spots/:spotId" element={<SpotsDetails />} />
     </Route>
   )
 );
