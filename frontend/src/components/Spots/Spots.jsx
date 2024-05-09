@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getSpots } from '../../store/spots';
 import { IoStar } from 'react-icons/io5';
 import './Spots.css';
-import { NavLink, Outlet, useParams } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
 const Spots = () => {
   const dispatch = useDispatch();
@@ -13,6 +13,12 @@ const Spots = () => {
   useEffect(() => {
     dispatch(getSpots());
   }, [dispatch]);
+
+  const avgRating = (el) => {
+    if (Number.isInteger(el)) {
+      return `${el.toFixed(1)}`;
+    } else return `${el.toFixed(2)}`;
+  };
 
   return (
     <>
@@ -35,7 +41,7 @@ const Spots = () => {
                     {spot.city}, {spot.state}
                   </div>
                   <div className="spot-avg-rating">
-                    <IoStar /> {spot.avgRating}
+                    <IoStar /> {avgRating(spot.avgRating)}
                   </div>
                 </div>
                 <div className="spot-price-container">

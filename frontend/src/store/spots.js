@@ -31,7 +31,21 @@ export const getSpotById = (spotId) => async (dispatch) => {
   }
 };
 
-const sortList = (list) => {
+export const createSpot = (data) => async (dispatch) => {
+  const res = await fetch('/api/spots', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (res.ok) {
+    const spot = await res.json();
+    dispatch(addOneSpot(spot));
+    return spot;
+  }
+};
+
+export const sortList = (list) => {
   return list
     .sort((spotA, spotB) => {
       return spotA.number - spotB.number;
@@ -67,7 +81,6 @@ const spotsReducer = (state = initialState, action) => {
         newState.list = sortList(spotList);
         return newState;
       }
-
       return {
         ...state,
         [action.spot.id]: {

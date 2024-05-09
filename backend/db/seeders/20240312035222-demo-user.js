@@ -42,6 +42,13 @@ module.exports = {
         username: 'FakeUser2',
         hashedPassword: bcrypt.hashSync('password3'),
       },
+      {
+        firstName: 'Sohna',
+        lastName: 'Singh',
+        email: 'singh@sohna.io',
+        username: 'SinghUser',
+        hashedPassword: bcrypt.hashSync('password4'),
+      },
     ];
     await User.bulkCreate(demo_users, options);
   },

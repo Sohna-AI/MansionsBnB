@@ -80,6 +80,36 @@ module.exports = {
         review: 'Really enjoyed the time, amazing for a party venue',
         stars: 5,
       },
+      {
+        userId: 4,
+        spotId: 1,
+        review: 'Really enjoyed the time, amazing for a party venue',
+        stars: 2,
+      },
+      {
+        userId: 4,
+        spotId: 2,
+        review: 'Really enjoyed the time, amazing for a party venue',
+        stars: 4,
+      },
+      {
+        userId: 4,
+        spotId: 3,
+        review: 'Really enjoyed the time, amazing for a party venue',
+        stars: 2,
+      },
+      {
+        userId: 4,
+        spotId: 4,
+        review: 'Really enjoyed the time, amazing for a party venue',
+        stars: 3,
+      },
+      {
+        userId: 4,
+        spotId: 5,
+        review: 'Really enjoyed the time, amazing for a party venue',
+        stars: 2,
+      },
     ];
 
     await Review.bulkCreate(demo_reviews, options);

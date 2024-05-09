@@ -12,6 +12,7 @@ import Navigation from './components/Navigation/Navigation';
 import Spots from './components/Spots/Spots';
 import LandingPage from './components/LandingPage/LandingPage';
 import SpotsDetails from './components/SpotsDetails/SpotsDetails';
+import CreateSpot from './components/CreateSpot/CreateSpot';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<LandingPage />} />
       <Route path="/spots" element={<Spots />} />
       <Route path="/spots/:spotId" element={<SpotsDetails />} />
+      <Route path="/spots/new" element={<CreateSpot />} />
     </Route>
   )
 );

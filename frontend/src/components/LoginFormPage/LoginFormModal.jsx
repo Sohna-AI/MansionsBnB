@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import './LoginForm.css';
@@ -8,6 +8,8 @@ const LoginFormModal = () => {
   const dispatch = useDispatch();
   const [credential, setCredential] = useState('');
   const [password, setPassword] = useState('');
+  const [credentialError, setCredentialError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
 
@@ -22,6 +24,16 @@ const LoginFormModal = () => {
       });
   };
 
+  useEffect(() => {
+    if (credential.length < 4) {
+      setCredentialError('Username must be at least 4 character');
+    } else setCredentialError('');
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+    } else {
+      setPasswordError('');
+    }
+  });
   return (
     <>
       <div className="login-page-container">
@@ -38,6 +50,7 @@ const LoginFormModal = () => {
                 required
               />
             </div>
+            {credentialError && <p>{credentialError}</p>}
             <div className="login-form-group">
               <label className="login-sub-title">Password</label>
               <input
@@ -45,10 +58,12 @@ const LoginFormModal = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              {errors.credential && <p>{errors.credential}</p>}
+              {passwordError && <p>{passwordError}</p>}
             </div>
-            <button type="submit" className="login-button">
+            {errors.credential && <p>{errors.credential}</p>}
+            <button type="submit" className="login-button" disabled={!credential || !password}>
               Log In
             </button>
           </form>

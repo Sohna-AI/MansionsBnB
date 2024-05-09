@@ -3,9 +3,18 @@ import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import logo from '../../../../images/logo.png';
 import './Navigation.css';
+import CreateSpot from '../CreateSpot/CreateSpot';
+import { useEffect, useState } from 'react';
 
 const Navigation = ({ isLoaded }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const sessionUser = useSelector((state) => state.session.user);
+
+  useEffect(() => {
+    if (sessionUser === null) {
+      setIsLoggedIn(false);
+    } else setIsLoggedIn(true);
+  }, [sessionUser]);
 
   return (
     <div className="nav-container">
@@ -15,6 +24,13 @@ const Navigation = ({ isLoaded }) => {
             <img src={logo} className="logo-image" />
           </NavLink>
         </li>
+        {isLoggedIn && (
+          <li>
+            <NavLink to="/spots/new">
+              <CreateSpot />
+            </NavLink>
+          </li>
+        )}
         {isLoaded && (
           <li>
             <ProfileButton user={sessionUser} />

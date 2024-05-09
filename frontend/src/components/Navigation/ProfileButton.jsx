@@ -54,26 +54,31 @@ const ProfileButton = ({ user }) => {
               </li>
               <li>{user.email}</li>
               <li>
-                <button onClick={logout}>Log Out</button>
+                <button onClick={logout} className="logout-button-dropdown">
+                  Log Out
+                </button>
               </li>
             </>
           ) : (
             <>
-              <button className="login-button-dropdown">
-                <OpenModalMenuItem
-                  itemText="Log In"
-                  modalComponent={<LoginFormModal />}
-                  onItemClick={closeMenu}
-                />
-              </button>
-              <br />
-              <button className="signup-button-dropdown">
-                <OpenModalMenuItem
-                  itemText="Sign Up"
-                  modalComponent={<SignupFormModal />}
-                  onItemClick={closeMenu}
-                />
-              </button>
+              <li>
+                <button className="login-button-dropdown">
+                  <OpenModalMenuItem
+                    itemText="Log In"
+                    modalComponent={<LoginFormModal />}
+                    onItemClick={closeMenu}
+                  />
+                </button>
+              </li>
+              <li>
+                <button className="signup-button-dropdown">
+                  <OpenModalMenuItem
+                    itemText="Sign Up"
+                    modalComponent={<SignupFormModal />}
+                    onItemClick={closeMenu}
+                  />
+                </button>
+              </li>
             </>
           )}
         </ul>
