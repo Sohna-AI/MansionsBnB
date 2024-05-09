@@ -25,7 +25,7 @@ const Navigation = ({ isLoaded }) => {
           </NavLink>
         </li>
         {isLoggedIn && (
-          <li>
+          <li className='create-spot'>
             <NavLink to="/spots/new">
               <CreateSpot />
             </NavLink>

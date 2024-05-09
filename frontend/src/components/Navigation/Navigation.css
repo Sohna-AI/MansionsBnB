@@ -21,3 +21,7 @@ ul {
 .logo-image {
   width: 150px;
 }
+
+.create-spot {
+  text-decoration: none;
+}

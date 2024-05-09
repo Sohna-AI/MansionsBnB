@@ -1,5 +1,7 @@
+import './CreateSpot.css';
+
 const CreateSpot = () => {
-  return <h1>Create a spot</h1>;
+  return <p className="header">Create a spot</p>;
 };
 
 export default CreateSpot;
