@@ -94,7 +94,7 @@ const SpotsDetails = () => {
                 <img className="spot-detail-preview-image" src={findPreviewImage(spot)} alt="" />
                 <div className="spot-detail-extra-images">
                   {extraImages.map((image) => (
-                    <img src={image.url} alt="" id="extra-images" />
+                    <img key={image.id} src={image.url} alt="" id="extra-images" />
                   ))}
                 </div>
               </div>

@@ -1,5 +1,4 @@
 import { csrfFetch } from './csrf';
-import { sortList } from './spots';
 
 const ADD_ONE = 'spotImages/ADD_ONE';
 
