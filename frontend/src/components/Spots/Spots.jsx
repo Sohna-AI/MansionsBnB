@@ -9,12 +9,14 @@ const Spots = () => {
   const dispatch = useDispatch();
   const allSpots = useSelector((state) => state.spots);
   const spots = allSpots.list.map((spotId) => allSpots[spotId]);
+  console.log(spots);
 
   useEffect(() => {
     dispatch(getSpots());
   }, [dispatch]);
 
   const avgRating = (el) => {
+    if (el === 'Spot has no rating') return '';
     if (Number.isInteger(el)) {
       return `${el.toFixed(1)}`;
     } else return `${el.toFixed(2)}`;
@@ -36,7 +38,7 @@ const Spots = () => {
           <ul className="spots-page">
             {spots.map((spot) => (
               <li key={spot.id} className="single-spot">
-                <NavLink key={spot.id} to={`/spots/${spot.id}`}>
+                <NavLink to={`/spots/${spot.id}`}>
                   <img className="spots-preview-image" src={checkImg(spot.previewImage)} title={spot.name} />
                 </NavLink>
                 <div className="spot-info-container">
@@ -49,15 +51,15 @@ const Spots = () => {
                 </div>
                 <div className="spot-price-container">
                   <div className="spot-price" style={{ fontWeight: 'bold' }}>
-                    ${spot.price} <span style={{ fontWeight: '200' }}>/month</span>
+                    ${spot.price} <span style={{ fontWeight: '200' }}>/night</span>
                   </div>
                 </div>
               </li>
             ))}
           </ul>
         </div>
-        <Outlet />
       </main>
+      <Outlet />
     </>
   );
 };

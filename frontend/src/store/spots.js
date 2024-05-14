@@ -1,3 +1,5 @@
+import { csrfFetch } from './csrf';
+
 const LOAD = 'spots/LOAD';
 const ADD_ONE = 'spots/ADD_ONE';
 
@@ -23,6 +25,7 @@ export const getSpots = () => async (dispatch) => {
 
 export const getSpotById = (spotId) => async (dispatch) => {
   const res = await fetch(`/api/spots/${spotId}`);
+  console.log(spotId);
 
   if (res.ok) {
     const spot = await res.json();
@@ -32,7 +35,7 @@ export const getSpotById = (spotId) => async (dispatch) => {
 };
 
 export const createSpot = (data) => async (dispatch) => {
-  const res = await fetch('/api/spots', {
+  const res = await csrfFetch('/api/spots', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -76,19 +79,19 @@ const spotsReducer = (state = initialState, action) => {
           ...state,
           [action.spot.id]: action.spot,
         };
+
         const spotList = newState.list.map((id) => newState[id]);
         spotList.push(action.spot);
         newState.list = sortList(spotList);
         return newState;
       }
-      return {
+
+      const newSpot = {
         ...state,
-        [action.spot.id]: {
-          ...state[action.spot.id],
-          ...action.spot,
-          ...action.spot.Owner,
-        },
+        [action.spot.id]: action.spot,
       };
+
+      return newSpot;
     }
     default:
       return state;

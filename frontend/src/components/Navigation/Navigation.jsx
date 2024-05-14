@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import logo from '../../../../images/logo.png';
 import './Navigation.css';
-import CreateSpot from '../CreateSpot/CreateSpot';
 import { useEffect, useState } from 'react';
 
 const Navigation = ({ isLoaded }) => {
@@ -24,15 +23,18 @@ const Navigation = ({ isLoaded }) => {
             <img src={logo} className="logo-image" />
           </NavLink>
         </li>
-        {isLoggedIn && (
-          <li className='create-spot'>
+        {isLoggedIn && isLoaded && (
+          <li className="create-spot">
             <NavLink to="/spots/new">
-              <CreateSpot />
+              <button className="create-spot-button">Create a spot</button>
             </NavLink>
+            <div className="profile-button-nav">
+              <ProfileButton user={sessionUser} />
+            </div>
           </li>
         )}
-        {isLoaded && (
-          <li>
+        {isLoaded && !isLoggedIn && (
+          <li className="profile-button-nav">
             <ProfileButton user={sessionUser} />
           </li>
         )}

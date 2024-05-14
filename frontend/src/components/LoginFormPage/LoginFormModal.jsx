@@ -33,7 +33,7 @@ const LoginFormModal = () => {
     } else {
       setPasswordError('');
     }
-  });
+  }, [credential.length, password.length]);
   return (
     <>
       <div className="login-page-container">

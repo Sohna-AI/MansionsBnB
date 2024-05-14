@@ -64,6 +64,7 @@
   border-radius: 10px;
   font-weight: 800;
   box-shadow: 3px 3px 0px 0px #e99f4c;
+  cursor: pointer;
 }
 
 .signup-button:hover {

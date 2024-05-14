@@ -1,7 +1,218 @@
-.header {
+* {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
     'Open Sans', 'Helvetica Neue', sans-serif;
-  transform: translateX(500px);
-  font-size: 20px;
+}
+
+.create-spot-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 80px;
+}
+
+.create-spot-heading {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.create-spot-address-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-spot-country,
+.create-spot-street-address {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 15px;
+}
+
+.create-spot-city-state-container {
+  display: flex;
+  padding-bottom: 15px;
+}
+
+.street-address-container,
+.country-container,
+.city-container,
+.state-container,
+.latitude-container,
+.longitude-container,
+.name-container,
+.price-container,
+.description-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+  gap: 10px;
+}
+
+.create-spot-city,
+.create-spot-state {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-spot-state {
+  width: 210px;
+  padding-left: 157px;
+}
+
+.create-spot-lat-lng-container {
+  display: flex;
+  padding-bottom: 20px;
+  border-bottom: 2px solid gray;
+}
+
+.create-spot-longitude {
+  padding-left: 157px;
+}
+
+.create-spot-latitude,
+.create-spot-longitude {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-spot-description-container {
+  border-bottom: 2px solid gray;
+  padding-bottom: 20px;
+}
+
+.create-spot-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-spot-title-container {
+  padding-bottom: 20px;
+  border-bottom: 2px solid gray;
+}
+
+.create-spot-price-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-spot-price-container {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px solid gray;
+  padding-bottom: 20px;
+}
+
+.create-spot-preview-image {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+.create-spot-images {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px solid gray;
+  padding-bottom: 20px;
+}
+
+.create-spot-button-container {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+#input {
+  height: 44px;
+  background-color: #05060f0a;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  border: 2px solid transparent;
+  font-size: 1rem;
+  transition: border-color 0.3s cubic-bezier(0.25, 0.01, 0.25, 1) 0s,
+    color 0.3s cubic-bezier(0.25, 0.01, 0.25, 1) 0s, background 0.2s cubic-bezier(0.25, 0.01, 0.25, 1) 0s;
+}
+
+#input-textarea {
+  background-color: #05060f0a;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  border: 2px solid transparent;
+  font-size: 1rem;
+  transition: border-color 0.3s cubic-bezier(0.25, 0.01, 0.25, 1) 0s,
+    color 0.3s cubic-bezier(0.25, 0.01, 0.25, 1) 0s, background 0.2s cubic-bezier(0.25, 0.01, 0.25, 1) 0s;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #05060f99;
+  transition: color 0.3s cubic-bezier(0.25, 0.01, 0.25, 1) 0s;
+}
+
+#input:hover,
+#input-textarea:hover,
+#input:focus,
+#input-textarea:focus,
+#input-textarea:hover input {
+  outline: none;
+  border-color: #e99f4c;
+}
+
+#input-group:hover .label,
+#input:focus,
+#input-textarea:focus {
+  color: #05060fc2;
+}
+
+.create-spot-button {
+  appearance: none;
+  background-color: transparent;
+  border: 0.125em solid #1a1a1a;
+  border-radius: 0.9375em;
+  box-sizing: border-box;
+  color: #3b3b3b;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-height: 3.75em;
+  min-width: 0;
+  outline: none;
+  padding: 1em 2.3em;
+  text-align: center;
   text-decoration: none;
+  transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  will-change: transform;
+}
+
+.create-spot-button:disabled {
+  pointer-events: none;
+}
+
+.create-spot-button:hover {
+  color: #fff;
+  background-color: #e99f4c;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.create-spot-button:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.error {
+  font-family: Roobert, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 1rem;
+  color: red;
 }
