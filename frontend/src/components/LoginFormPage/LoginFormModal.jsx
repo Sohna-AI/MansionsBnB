@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import './LoginForm.css';
@@ -15,6 +15,14 @@ const LoginFormModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (credential.length < 4) {
+      setCredentialError('Username must be at least 4 characters');
+    }
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+    }
+
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
       .then(closeModal)
@@ -31,16 +39,6 @@ const LoginFormModal = () => {
       console.error('Demo Login failed:', error);
     }
   };
-  useEffect(() => {
-    if (credential.length < 4) {
-      setCredentialError('Username must be at least 4 character');
-    } else setCredentialError('');
-    if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-    } else {
-      setPasswordError('');
-    }
-  }, [credential.length, password.length]);
   return (
     <>
       <div className="login-page-container">
@@ -53,6 +51,7 @@ const LoginFormModal = () => {
                 className="login-form-style"
                 type="text"
                 value={credential}
+                placeholder="Enter your username or email"
                 onChange={(e) => setCredential(e.target.value)}
                 required
               />
@@ -64,6 +63,7 @@ const LoginFormModal = () => {
                 className="login-form-style"
                 type="password"
                 value={password}
+                placeholder="Enter your password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
