@@ -1,4 +1,5 @@
 import { csrfFetch } from './csrf';
+import { sortList } from './spots';
 
 const ADD_ONE = 'spotImages/ADD_ONE';
 
@@ -27,30 +28,22 @@ const initialState = {
 
 const spotImageReducer = (state = initialState, action) => {
   switch (action.type) {
-    // case ADD_ONE: {
-    //   if (!state[action.spotImage.id]) {
-    //     const newState = {
-    //       ...state,
-    //       [action.spotImage.id]: action.spotImage,
-    //     };
-    //     const spotImageList = newState.list.map((id) => newState[id]);
-    //     spotImageList.push(action.spotImage);
-    //     newState.list = sortList(spotImageList);
-    //     return newState;
-    //   }
-    //   return {
-    //     ...state,
-    //     [action.spotImage.id]: {
-    //       ...state[action.spotImage.id],
-    //       ...action.spotImage,
-    //     },
-    //   };
-    // }
-    case ADD_ONE:
+    case ADD_ONE: {
+      if (!state[action.spotImage.id]) {
+        const newState = {
+          ...state,
+          [action.spotImage.id]: action.spotImage,
+        };
+        const spotImageList = newState.list.map((id) => newState[id]);
+        spotImageList.push(action.spotImage);
+        newState.list = sortList(spotImageList);
+        return newState;
+      }
       return {
         ...state,
         [action.spotImage.id]: action.spotImage,
       };
+    }
     default:
       return state;
   }

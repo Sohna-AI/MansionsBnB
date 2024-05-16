@@ -16,6 +16,7 @@
 
 .spot-detail-preview-image {
   width: 450px;
+  height: 400px;
   padding-right: 10px;
 }
 .spot-detail-images {
@@ -25,10 +26,11 @@
 .spot-detail-extra-images {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  column-gap: 10px;
 }
 #extra-images {
   width: 300px;
+  height: 190px;
 }
 
 .spot-detail-container {
@@ -184,4 +186,19 @@
 .reserve-button:active {
   box-shadow: none;
   transform: translateY(0);
+}
+
+.dim-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: none;
+}
+
+.dim-overlay.visible {
+  display: block;
 }

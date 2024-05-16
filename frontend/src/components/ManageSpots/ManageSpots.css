@@ -4,12 +4,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.all-spots {
+.manage-spots {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  
 }
-.spots-preview-image {
+.manage-spots-preview-image {
   max-width: 450px;
   width: 100%;
   height: 325px;
@@ -20,34 +20,56 @@
   border-radius: 5%;
 }
 
-.spots-page {
+.manage-spots-page {
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
 }
 
-.spot-price-container {
+.manage-spot-price-container {
   transform: translateX(20px);
 }
 
-.single-spot {
+.manage-single-spot {
   display: flex;
   flex-direction: column;
   flex-basis: 23.7%;
 }
 
-.spot-info-container {
+.manage-spot-info-container {
   display: flex;
   width: 450px;
   justify-content: space-between;
 }
 
-.spot-info {
+.manage-spot-info {
   transform: translateX(10px);
 }
 
-.spot-avg-rating {
+.manage-spot-avg-rating {
   display: flex;
   align-items: center;
   transform: translateX(-10px);
+}
+
+.spot-update-delete-button-container {
+  display: flex;
+  flex: row;
+  column-gap: 10px;
+  padding-top: 10px;
+}
+
+.dim-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100; 
+  display: none;
+}
+
+.dim-overlay.visible {
+  display: block;
 }

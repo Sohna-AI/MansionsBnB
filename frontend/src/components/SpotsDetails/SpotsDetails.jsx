@@ -1,22 +1,52 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpotById } from '../../store/spots';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { IoStar } from 'react-icons/io5';
-import { getReviewsBySpotId } from '../../store/reviews';
+import { deleteReview, getReviewsBySpotId } from '../../store/reviews';
 import './SpotsDetails.css';
 import DateDisplay from './DateDisplay';
+import CreateReviews from '../CreateReviews/CreateReviews';
+import DeleteSpot from '../DeleteSpot/DeleteSpot';
 
 const SpotsDetails = () => {
   const dispatch = useDispatch();
   const { spotId } = useParams();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const sessionUser = useSelector((state) => state.session.user);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteReviewId, setDeleteReviewId] = useState(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const modalRef = useRef(null);
+  useEffect(() => {
+    const fetchSpotDetailsAndReviews = async () => {
+      setIsLoaded(false);
+
+      try {
+        await dispatch(getSpotById(spotId));
+        await dispatch(getReviewsBySpotId(spotId));
+
+        setIsLoaded(true);
+      } catch (error) {
+        console.error('Error fetching spot details and reviews:', error);
+        setIsLoaded(true);
+      }
+    };
+
+    fetchSpotDetailsAndReviews();
+  }, [spotId, dispatch]);
+
+  useEffect(() => {
+    if (sessionUser === null) {
+      setIsLoggedIn(false);
+    } else setIsLoggedIn(true);
+  }, [sessionUser]);
 
   const spot = useSelector((state) => state.spots[spotId]);
-
   const reviews = useSelector((state) => state.reviews);
-
-  const reviewsArr = reviews.list.map((reviewId) => reviews[reviewId]);
+  const reviewsArray = reviews.list.map((reviewId) => reviews[reviewId]);
+  const reviewsArr = reviewsArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const numReview = (el) => {
     if (el === 1) return `${el} Review`;
@@ -31,22 +61,6 @@ const SpotsDetails = () => {
       return `${el.toFixed(1)} · `;
     } else return `${el.toFixed(2)} · `;
   };
-
-  useEffect(() => {
-    const spotDetail = async () => {
-      try {
-        setIsLoaded(false);
-        await dispatch(getSpotById(spotId));
-        await dispatch(getReviewsBySpotId(spotId));
-        setIsLoaded(true);
-      } catch (error) {
-        console.error('Error fetching spot:', error);
-        setIsLoaded(true);
-      }
-    };
-
-    spotDetail();
-  }, [spotId, dispatch]);
 
   const findPreviewImage = (spot) => {
     if (spot && Array.isArray(spot.SpotImages)) {
@@ -64,7 +78,51 @@ const SpotsDetails = () => {
   };
   const extraImages = findExtraImages(spot);
 
-  if (!isLoaded) {
+  const userPostedReview = (reviews, userId) => {
+    const actualUserId = sessionUser?.id;
+    if (!Array.isArray(reviews) || typeof userId !== 'number') {
+      return false;
+    }
+    return reviews?.some((review) => review.userId === actualUserId);
+  };
+
+  const userIsSpotOwner = (spot, userId) => {
+    return spot.Owner.id === userId;
+  };
+
+  const renderPostReviewButton = () => {
+    if (!isLoggedIn) return false;
+    else if (userIsSpotOwner(spot, sessionUser.id)) return false;
+    else if (userPostedReview(reviewsArr, sessionUser.id)) return false;
+    else return true;
+  };
+
+  const openDeleteModal = (reviewId) => {
+    setDeleteReviewId(reviewId);
+    setDeleteModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setDeleteReviewId(null);
+    setDeleteModalOpen(false);
+  };
+  const confirmDeleteReview = async () => {
+    try {
+      await dispatch(deleteReview(deleteReviewId)).then(closeModal());
+      setDeleteReviewId(null);
+      await dispatch(getReviewsBySpotId(spotId));
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
+  };
+  const handleOpenReviewModal = () => {
+    setReviewModalOpen(true);
+  };
+
+  const handleCloseReviewModal = () => {
+    setReviewModalOpen(false);
+  };
+  if (!isLoaded || !spot || !reviewsArray) {
     return <div>Loading...</div>;
   }
 
@@ -108,7 +166,8 @@ const SpotsDetails = () => {
                     <div className="spot-detail-price">
                       <div className="spot-detail-price-avg-container">
                         <span className="spot-price" style={{ fontSize: 20, fontWeight: 'bold' }}>
-                          ${spot.price}/night
+                          ${spot.price}
+                          <span style={{ fontWeight: '200' }}>/night</span>
                         </span>
                         <div className="spot-detail-avg-rating-container">
                           <span className="spot-detail-avg-rating">
@@ -131,18 +190,50 @@ const SpotsDetails = () => {
             <IoStar />
             {avgRating(spot.avgRating)} {numReview(spot.numReviews)}
           </h3>
+          {renderPostReviewButton() && (
+            <div className="post-review-button-container">
+              <button style={{ listStyle: 'none', cursor: 'pointer' }} onClick={handleOpenReviewModal}>
+                Post Your Review
+              </button>
+            </div>
+          )}
+          {!reviewsArr.length && renderPostReviewButton() && <p>Be first to post a review</p>}
           <ul className="review-section-user-info">
             {reviewsArr.map((review) => (
               <li key={review.id} className="review-section-comment">
                 <div className="review-section-user">
-                  <p>{review.User.firstName}</p>
+                  <p>{review.User?.firstName}</p>
                   <DateDisplay dateString={review.updatedAt.split(' ')[0]} />
                 </div>
                 <p>{review.reviewData}</p>
+                {sessionUser && sessionUser.id === review.userId && (
+                  <button onClick={() => openDeleteModal(review.id)} style={{ cursor: 'pointer' }}>
+                    Delete
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         </footer>
+        {reviewModalOpen && (
+          <div className="dim-overlay visible">
+            <div className="create-review-modal" ref={modalRef}>
+              <CreateReviews spotId={spotId} closeModal={handleCloseReviewModal} />
+            </div>
+          </div>
+        )}
+        {deleteModalOpen && <div className="dim-overlay visible"></div>}
+        {deleteModalOpen && (
+          <DeleteSpot
+            reviewId={deleteReviewId}
+            closeModal={closeModal}
+            handleDelete={confirmDeleteReview}
+            title="Confirm Delete"
+            subTitle="Are you sure you want to delete this review?"
+            confirmText="Yes (Delete Review)"
+            cancelText="No (Keep Review)"
+          />
+        )}
         <Outlet />
       </>
     );

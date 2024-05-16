@@ -138,33 +138,28 @@ const CreateSpot = () => {
       lat: formData.lat,
       lng: formData.lng,
     };
+
     let createdSpot = await dispatch(createSpot(spotPayload));
-    console.log(createSpot);
 
-    const spotPreviewImagePayload = {
-      url: formData.previewImage,
-      preview: true,
-    };
-    let previewImage = await dispatch(createSpotImage(spotPreviewImagePayload, createdSpot.id));
+    if (createdSpot) {
+      const imageUrls = [formData.imageOne, formData.imageTwo, formData.imageThree, formData.imageFour]
+        .filter((url) => url.trim() && isValidUrl(url))
+        .map((url) => ({ url, preview: false }));
 
-    const imagesPayload = [
-      { url: formData.imageOne.trim(), preview: false },
-      { url: formData.imageTwo.trim(), preview: false },
-      { url: formData.imageThree.trim(), preview: false },
-      { url: formData.imageFour.trim(), preview: false },
-    ].filter((image) => image.url && isValidUrl(image.url));
+      const previewImagePayload = {
+        url: formData.previewImage,
+        preview: true,
+      };
 
-    const imagePromise = imagesPayload.map(async (image) => {
-      await dispatch(createSpotImage(image, createdSpot.id));
-    });
+      await dispatch(createSpotImage(previewImagePayload, createdSpot.id));
 
-    const createdImages = await Promise.all(imagePromise);
-    const formValid = Object.values(formErrors).every((error) => !error);
-
-    if (formValid) {
-      if (createdSpot && previewImage && createdImages.every((image) => image)) {
+      for (const imageUrl of imageUrls) {
+        await dispatch(createSpotImage(imageUrl, createdSpot.id));
+      }
+      const formValid = Object.values(formErrors).every((error) => !error);
+      if (formValid) {
         navigate(`/spots/${createdSpot.id}`);
-      } else console.log('Failed');
+      }
     }
   };
 

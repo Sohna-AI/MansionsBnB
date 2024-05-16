@@ -24,6 +24,13 @@ const LoginFormModal = () => {
       });
   };
 
+  const handleDemoLogin = async () => {
+    try {
+      await dispatch(sessionActions.loginAsDemoUser()).then(closeModal);
+    } catch (error) {
+      console.error('Demo Login failed:', error);
+    }
+  };
   useEffect(() => {
     if (credential.length < 4) {
       setCredentialError('Username must be at least 4 character');
@@ -63,10 +70,17 @@ const LoginFormModal = () => {
               {passwordError && <p>{passwordError}</p>}
             </div>
             {errors.credential && <p>{errors.credential}</p>}
-            <button type="submit" className="login-button" disabled={!credential || !password}>
-              Log In
-            </button>
+            <div className="login-form-button-container">
+              <button type="submit" className="login-button" disabled={!credential || !password}>
+                Log In
+              </button>
+            </div>
           </form>
+          <div className="login-button-demo-user">
+            <button className="login-button" onClick={handleDemoLogin}>
+              Login as Demo User
+            </button>
+          </div>
         </div>
       </div>
     </>

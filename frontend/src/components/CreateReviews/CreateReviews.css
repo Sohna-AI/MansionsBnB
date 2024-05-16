@@ -1,13 +1,23 @@
-.signup-page-container {
+* {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.create-review-container {
+  position: fixed;
+  top: 25%;
+  left: 40%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
-  text-align: center;
+  align-items: center;
+}
+
+.create-review-main-container {
   background-color: #eddcd9;
 }
 
-.signup-page {
+.create-review-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,31 +27,18 @@
   width: auto;
   border: 2px solid #264143;
   box-shadow: 4px 3px 0px 1px #e99f4c;
+  padding: 20px 20px;
 }
 
-.signup-title {
+.create-review-title {
   color: #264143;
   font-weight: 900;
   font-size: 1.5em;
   margin-top: 20px;
-  background-color: rgb(234, 221, 218);
-}
-.signup-sub-title {
-  font-weight: 600;
-  margin: 5px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
+  background-color: #eddcd9;
 }
 
-.signup-form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  margin: 10px;
-}
-
-.signup-form-style {
+.create-review-form-style {
   outline: none;
   border: 2px solid #264143;
   width: 290px;
@@ -52,19 +49,20 @@
     color 0.3s cubic-bezier(0.25, 0.01, 0.25, 1) 0s, background 0.2s cubic-bezier(0.25, 0.01, 0.25, 1) 0s;
 }
 
-.signup-form-style:focus,
-.signup-form-style:hover,
-.signup-button:focus {
+.create-review-form-style:focus,
+.create-review-form-style:hover,
+.create-review-button {
   outline: none;
   border-color: #de5499;
 }
 
-.signup-form-style:focus {
+.create-review-form-style:focus {
   transform: translateY(4px);
   box-shadow: 1px 2px 0px 0px #de5499;
 }
 
-.signup-button {
+.create-review-button,
+.create-review-cancel-button {
   appearance: none;
   background-color: transparent;
   border: 0.125em solid #1a1a1a;
@@ -92,21 +90,85 @@
   will-change: transform;
 }
 
-.signup-button:hover {
+.create-review-cancel-button-container {
+  display: flex;
+  justify-content: center;
+  background-color: #eddcd9;
+}
+.create-review-cancel-button:hover {
+  color: #fff;
+  background-color: #e99f4c;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+.create-review-button:hover {
   color: #fff;
   background-color: #de5499;
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
 }
 
-.signup-form-button-container {
+.create-review-button-container {
   padding: 20px 30px;
   background-color: #eddcd9;
 }
 
-.signup-button:disabled {
+.create-review-button:disabled {
   transform: translateY(0px);
   color: black;
   background-color: #eddcd9;
   box-shadow: none;
+}
+
+.star-rating-container {
+  background-color: #eddcd9;
+  display: flex;
+}
+
+.create-review-stars-text-container {
+  background-color: #eddcd9;
+}
+
+.create-review-stars-text {
+  background-color: #eddcd9;
+}
+
+.rating {
+  display: inline-block;
+}
+
+.rating-container {
+  background-color: #eddcd9;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+}
+
+.create-review-star {
+  background-color: #eddcd9;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  float: right;
+  cursor: pointer;
+  color: #fff;
+  transition: color 0.3s;
+}
+
+.rating label:before {
+  content: '\2605';
+  font-size: 30px;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+  color: #de5499;
+  transition: color 0.3s;
 }

@@ -13,6 +13,8 @@ import Spots from './components/Spots/Spots';
 import LandingPage from './components/LandingPage/LandingPage';
 import SpotsDetails from './components/SpotsDetails/SpotsDetails';
 import CreateSpot from './components/CreateSpot/CreateSpot';
+import ManageSpots from './components/ManageSpots/ManageSpots';
+import EditSpot from './components/EditSpot/EditSpot';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -39,6 +41,8 @@ const router = createBrowserRouter(
       <Route path="/spots" element={<Spots />} />
       <Route path="/spots/:spotId" element={<SpotsDetails />} />
       <Route path="/spots/new" element={<CreateSpot />} />
+      <Route path="/spots/current" element={<ManageSpots />} />
+      <Route path="/spots/:spotId/edit" element={<EditSpot />} />
     </Route>
   )
 );

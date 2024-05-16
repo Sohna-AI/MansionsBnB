@@ -2,6 +2,7 @@ import { csrfFetch } from './csrf';
 
 const LOAD = 'spots/LOAD';
 const ADD_ONE = 'spots/ADD_ONE';
+const REMOVE = 'spots/REMOVE';
 
 const load = (list) => ({
   type: LOAD,
@@ -11,6 +12,11 @@ const load = (list) => ({
 const addOneSpot = (spot) => ({
   type: ADD_ONE,
   spot,
+});
+
+const removeSpot = (spotId) => ({
+  type: REMOVE,
+  spotId,
 });
 
 export const getSpots = () => async (dispatch) => {
@@ -25,10 +31,10 @@ export const getSpots = () => async (dispatch) => {
 
 export const getSpotById = (spotId) => async (dispatch) => {
   const res = await fetch(`/api/spots/${spotId}`);
-  console.log(spotId);
 
   if (res.ok) {
     const spot = await res.json();
+    console.log(spot);
     dispatch(addOneSpot(spot));
     return spot;
   }
@@ -45,6 +51,31 @@ export const createSpot = (data) => async (dispatch) => {
     const spot = await res.json();
     dispatch(addOneSpot(spot));
     return spot;
+  }
+};
+
+export const editSpot = (data, spotId) => async (dispatch) => {
+  const res = await csrfFetch(`/api/spots/${spotId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (res.ok) {
+    const updatedSpot = await res.json();
+    dispatch(addOneSpot(updatedSpot));
+    return updatedSpot;
+  }
+};
+
+export const deleteSpot = (spotId) => async (dispatch) => {
+  const res = await csrfFetch(`/api/spots/${spotId}`, {
+    method: 'DELETE',
+  });
+
+  if (res.ok) {
+    dispatch(removeSpot(spotId));
+    return;
   }
 };
 
@@ -92,6 +123,11 @@ const spotsReducer = (state = initialState, action) => {
       };
 
       return newSpot;
+    }
+    case REMOVE: {
+      const newState = { ...state };
+      delete newState[action.spotId];
+      return newState;
     }
     default:
       return state;

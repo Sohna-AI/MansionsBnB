@@ -20,78 +20,123 @@ module.exports = {
      */
     const demo_spotImage = [
       {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=3275&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5803/photos/DSC_1129_30_31_32_33September_19-Edit.jpg',
         spotId: 1,
         preview: true,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=3275&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5803/photos/DSC_1104_5_6_7_8September_19.jpg',
         spotId: 1,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=3275&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5803/photos/DSC_1109_10_11_12_13September_19.jpg',
         spotId: 1,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=3275&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5803/photos/DSC_1084_5_6_7_8September_19.jpg',
         spotId: 1,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=3275&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5803/photos/sgsg.PNG',
         spotId: 1,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5764/photos/Zabriskie_House.jpg',
         spotId: 2,
         preview: true,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5764/photos/Zabriskie_House_Dining_Room_Doorway.jpg',
         spotId: 2,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5764/photos/Zabriskie_House_Firepit.jpg',
         spotId: 2,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5764/photos/Zabriskie_House_Staircase.jpg',
         spotId: 2,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://ik.imagekit.io/edge/tr:w-1200,ar-545-303,pr-true/properties/5764/photos/Zabriskie_House_Reception.jpg',
         spotId: 2,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=3348&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://images.rentals.ca/property-pictures/medium/calgary-ab/559224/apartment-23657076.jpg',
         spotId: 3,
         preview: true,
       },
       {
-        url: 'https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=3348&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://images.rentals.ca/property-pictures/medium/calgary-ab/559224/apartment-23657078.jpg',
         spotId: 3,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=3348&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://images.rentals.ca/property-pictures/medium/calgary-ab/559224/apartment-23657081.jpg',
         spotId: 3,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=3348&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://images.rentals.ca/property-pictures/medium/calgary-ab/559224/apartment-23657083.jpg',
         spotId: 3,
         preview: false,
       },
       {
-        url: 'https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=3348&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        url: 'https://images.rentals.ca/property-pictures/medium/calgary-ab/559224/apartment-23657087.jpg',
         spotId: 3,
+        preview: false,
+      },
+      {
+        url: 'https://i.plumcache.com/listings/f5066380-6796-4384-8306-50fe12ca3aef/5a1c284b-a375-420d-a2fd-01f0223f1a13..jpg?w=1080&fit=min&fm=avif',
+        spotId: 4,
+        preview: true,
+      },
+      {
+        url: 'https://i.plumcache.com/listings/f5066380-6796-4384-8306-50fe12ca3aef/02bef6bd-d210-4343-9d2e-8eee7959d2a5..jpg?w=1080&fit=min&fm=avif',
+        spotId: 4,
+        preview: false,
+      },
+      {
+        url: 'https://i.plumcache.com/listings/f5066380-6796-4384-8306-50fe12ca3aef/519b8e4f-5c28-4d01-b5e9-702db1c76da1..jpg?w=1080&fit=min&fm=avif',
+        spotId: 4,
+        preview: false,
+      },
+      {
+        url: 'https://i.plumcache.com/listings/f5066380-6796-4384-8306-50fe12ca3aef/013a13b5-0f82-478d-81d5-e6038a368f5b..jpg?w=1080&fit=min&fm=avif',
+        spotId: 4,
+        preview: false,
+      },
+      {
+        url: 'https://i.plumcache.com/listings/f5066380-6796-4384-8306-50fe12ca3aef/adcc7076-2658-4485-a420-b392702a2c6b..jpg?w=1080&fit=min&fm=avif',
+        spotId: 4,
+        preview: false,
+      },
+      {
+        url: 'https://villas.journeymexico.com/wp/wp-content/uploads/casa-bellamar-villa-front.jpg',
+        spotId: 5,
+        preview: true,
+      },
+      {
+        url: 'https://villas.journeymexico.com/wp/wp-content/uploads/casa-bellamar-villa-pool.jpg',
+        spotId: 5,
+        preview: false,
+      },
+      {
+        url: 'https://villas.journeymexico.com/wp/wp-content/uploads/casa-bellamar-villa-entrance.jpg',
+        spotId: 5,
+        preview: false,
+      },
+      {
+        url: 'https://villas.journeymexico.com/wp/wp-content/uploads/casa-bellamar-view.jpg',
+        spotId: 5,
         preview: false,
       },
     ];

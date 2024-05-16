@@ -6,7 +6,7 @@ import LoginFormModal from '../LoginFormPage/LoginFormModal';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import * as sessionActions from '../../store/session';
 import './ProfileButton.css';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const ProfileButton = ({ user }) => {
   const navigate = useNavigate();
@@ -57,6 +57,11 @@ const ProfileButton = ({ user }) => {
                   <div className="profile-dropdown-email">{user.email}</div>
                 </div>
               </li>
+              <li className="profile-dropdown-manage-spots-container">
+                <NavLink to="/spots/current" className='profile-dropdown-manage-spots' onClick={closeMenu} style={{ textDecoration: 'none' }}>
+                  Manage Spots
+                </NavLink>
+              </li>
               <li>
                 <div className="logout-button-container">
                   <button onClick={logout} className="logout-button-dropdown">
@@ -81,7 +86,7 @@ const ProfileButton = ({ user }) => {
                   <button className="signup-button-dropdown">
                     <OpenModalMenuItem
                       itemText="Sign Up"
-                      modalComponent={<SignupFormModal />}
+                      modalComponent={<SignupFormModal navigate={navigate} />}
                       onItemClick={closeMenu}
                     />
                   </button>
