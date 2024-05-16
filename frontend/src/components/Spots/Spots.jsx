@@ -55,6 +55,7 @@ const Spots = () => {
                         loading="eager"
                         title={spot.name}
                       />
+                      <span className="spot-tooltip">{spot.name}</span>
                       <div className="spot-info-container">
                         <div className="spot-info">
                           {spot.city}, {spot.state}

@@ -59,7 +59,7 @@ const ManageSpots = () => {
             {userSpots.map((spot) => (
               <li key={spot.id} className="manage-single-spot">
                 <NavLink to={`/spots/${spot.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                  <img className="manage-spots-preview-image" src={spot.previewImage} title={spot.name} />
+                  <img className="manage-spots-preview-image" src={spot.previewImage}/>
                   <span className='manage-spot-tooltip'>{spot.name}</span>
                   <div className="manage-spot-info-container">
                     <div className="manage-spot-info">
