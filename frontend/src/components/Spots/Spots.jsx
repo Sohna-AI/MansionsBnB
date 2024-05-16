@@ -48,27 +48,27 @@ const Spots = () => {
                 if (!spot || !spot.id) return null;
                 return (
                   <li key={spot.id} className="single-spot">
-                    <NavLink to={`/spots/${spot.id}`}>
+                    <NavLink to={`/spots/${spot.id}`} style={{ textDecoration: 'none', color: 'black' }}>
                       <img
                         className="spots-preview-image"
                         src={spot?.previewImage}
                         loading="eager"
                         title={spot.name}
                       />
+                      <div className="spot-info-container">
+                        <div className="spot-info">
+                          {spot.city}, {spot.state}
+                        </div>
+                        <div className="spot-avg-rating">
+                          <IoStar className="create-spot-star" /> {avgRating(spot.avgRating)}
+                        </div>
+                      </div>
+                      <div className="spot-price-container">
+                        <div className="spot-price" style={{ fontWeight: 'bold' }}>
+                          ${spot.price} <span style={{ fontWeight: '200' }}>/night</span>
+                        </div>
+                      </div>
                     </NavLink>
-                    <div className="spot-info-container">
-                      <div className="spot-info">
-                        {spot.city}, {spot.state}
-                      </div>
-                      <div className="spot-avg-rating">
-                        <IoStar /> {avgRating(spot.avgRating)}
-                      </div>
-                    </div>
-                    <div className="spot-price-container">
-                      <div className="spot-price" style={{ fontWeight: 'bold' }}>
-                        ${spot.price} <span style={{ fontWeight: '200' }}>/night</span>
-                      </div>
-                    </div>
                   </li>
                 );
               })}

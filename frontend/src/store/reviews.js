@@ -45,7 +45,6 @@ export const createReview = (data, spotId) => async (dispatch) => {
     });
     if (res.ok) {
       const newReview = await res.json();
-      console.log('NEW_REVIEW:', newReview);
       dispatch(add(newReview));
       return newReview;
     }
@@ -88,7 +87,6 @@ const reviewsReducer = (state = initialState, action) => {
       };
     }
     case ADD_REVIEW: {
-      console.log(action);
       if (!state[action.review.id]) {
         const newState = {
           ...state,
@@ -98,7 +96,7 @@ const reviewsReducer = (state = initialState, action) => {
         const reviewList = newState.list.map((id) => newState[id]);
         reviewList.push(action.review);
         newState.list = sortList(reviewList);
-        console.log(newState);
+
         return newState;
       }
 

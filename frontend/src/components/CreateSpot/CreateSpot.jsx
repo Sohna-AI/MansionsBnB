@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import validCountriesState from '../../utils/validData';
 import './CreateSpot.css';
 import { createSpot } from '../../store/spots';
-import { createSpotImage } from '../../store/spotImages';
 
 const CreateSpot = () => {
   const dispatch = useDispatch();
@@ -129,36 +128,41 @@ const CreateSpot = () => {
 
     const spotPayload = {
       country: formData.country,
-      state: formData.state,
       address: formData.address,
       city: formData.city,
-      name: formData.name,
-      description: formData.description,
-      price: formData.price,
+      state: formData.state,
       lat: formData.lat,
       lng: formData.lng,
-    };
-
-    let createdSpot = await dispatch(createSpot(spotPayload));
-
-    if (createdSpot) {
-      const imageUrls = [formData.imageOne, formData.imageTwo, formData.imageThree, formData.imageFour]
-        .filter((url) => url.trim() && isValidUrl(url))
-        .map((url) => ({ url, preview: false }));
-
-      const previewImagePayload = {
+      description: formData.description,
+      name: formData.name,
+      price: formData.price,
+      previewImage: {
         url: formData.previewImage,
         preview: true,
-      };
+      },
+      imageOne: {
+        url: formData.imageOne,
+        preview: false,
+      },
+      imageTwo: {
+        url: formData.imageTwo,
+        preview: false,
+      },
+      imageThree: {
+        url: formData.imageThree,
+        preview: false,
+      },
+      imageFour: {
+        url: formData.imageFour,
+        preview: false,
+      },
+    };
 
-      await dispatch(createSpotImage(previewImagePayload, createdSpot.id));
+    if (Object.keys(formErrors).length === 0) {
+      const newSpot = await dispatch(createSpot(spotPayload));
 
-      for (const imageUrl of imageUrls) {
-        await dispatch(createSpotImage(imageUrl, createdSpot.id));
-      }
-      const formValid = Object.values(formErrors).every((error) => !error);
-      if (formValid) {
-        navigate(`/spots/${createdSpot.id}`);
+      if (newSpot) {
+        navigate(`/spots/${newSpot.id}`);
       }
     }
   };
@@ -436,7 +440,12 @@ const CreateSpot = () => {
                     <br />
                   </div>
                   <div className="create-spot-button-container">
-                    <button type="submit" className="create-spot-button" style={{ cursor: 'pointer' }}>
+                    <button
+                      type="submit"
+                      className="create-spot-button"
+                      style={{ cursor: 'pointer' }}
+                      disabled={Object.keys(formErrors).length !== 0}
+                    >
                       Create Spot
                     </button>
                   </div>

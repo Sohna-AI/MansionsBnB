@@ -39,17 +39,54 @@ export const getSpotById = (spotId) => async (dispatch) => {
   }
 };
 
-export const createSpot = (data) => async (dispatch) => {
+export const createSpot = (spot) => async (dispatch) => {
+  const spotPayload = {
+    country: spot.country,
+    address: spot.address,
+    city: spot.city,
+    state: spot.state,
+    lat: spot.lat,
+    lng: spot.lng,
+    price: spot.price,
+    name: spot.name,
+    description: spot.description,
+  };
   const res = await csrfFetch('/api/spots', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify(spotPayload),
   });
 
   if (res.ok) {
-    const spot = await res.json();
-    dispatch(addOneSpot(spot));
-    return spot;
+    const data = await res.json();
+    const spotId = data.id;
+    const imagesArray = [];
+    const isValidImageUrl = (obj) => obj.url && obj.url.trim() !== '';
+    if (isValidImageUrl(spot.imageOne)) imagesArray.push(spot.imageOne);
+    if (isValidImageUrl(spot.imageTwo)) imagesArray.push(spot.imageTwo);
+    if (isValidImageUrl(spot.imageThree)) imagesArray.push(spot.imageThree);
+    if (isValidImageUrl(spot.imageFour)) imagesArray.push(spot.imageFour);
+    if (isValidImageUrl(spot.previewImage)) imagesArray.push(spot.previewImage);
+
+    const uploadedImages = await Promise.all(
+      imagesArray.map(async (image) => {
+        const resImages = await csrfFetch(`/api/spots/${spotId}/images`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(image),
+        });
+        return resImages.json();
+      })
+    );
+
+    const newSpot = {
+      ...data,
+      previewImage: spot.previewImage.url,
+      SpotImages: uploadedImages,
+    };
+
+    dispatch(addOneSpot(newSpot));
+    return newSpot;
   }
 };
 

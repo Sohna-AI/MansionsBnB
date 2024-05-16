@@ -7,17 +7,15 @@
 .manage-spots {
   display: flex;
   flex-direction: column;
-  
 }
 .manage-spots-preview-image {
   max-width: 450px;
   width: 100%;
   height: 325px;
   border: 1px solid gray;
-  box-shadow: 1px 1px 8px 1px black;
   margin-bottom: 10px;
   cursor: pointer;
-  border-radius: 5%;
+  border-radius: 5% 5% 0% 0%;
 }
 
 .manage-spots-page {
@@ -26,14 +24,25 @@
   gap: 40px;
 }
 
-.manage-spot-price-container {
+.manage-spot-price {
   transform: translateX(20px);
+  padding-top: 5px;
+  width: 50%;
 }
 
 .manage-single-spot {
   display: flex;
   flex-direction: column;
   flex-basis: 23.7%;
+  transition: all 0.5s;
+  border: 1px solid white;
+  max-width: 450px;
+  width: 100%;
+  border-radius: 5%;
+  padding-bottom: 10px;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  box-sizing: border-box;
+  background: rgba(217, 217, 217, 0.58);
 }
 
 .manage-spot-info-container {
@@ -57,6 +66,110 @@
   flex: row;
   column-gap: 10px;
   padding-top: 10px;
+  padding-left: 25px;
+  width: fit-content;
+}
+
+.manage-spot-empty-box {
+  border: 1px solid black;
+  width: 300px;
+  height: 50px;
+  visibility: hidden;
+}
+
+.manage-spot-empty-box:hover {
+  width: fit-content;
+}
+
+.spot-update-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: rgb(255, 135, 65);
+  background: linear-gradient(250deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
+}
+
+.manage-spot-delete-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: rgb(255, 135, 65);
+  background: linear-gradient(250deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
+}
+
+.sign {
+  width: 100%;
+  transition-duration: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  transition-duration: 0.3s;
+}
+
+.sign svg {
+  width: 17px;
+}
+
+.sign svg path {
+  fill: white;
+}
+
+.manage-spot-delete-button:hover {
+  width: 125px;
+  border-radius: 40px;
+  transition-duration: 0.3s;
+}
+
+.manage-spot-delete-button:hover .sign {
+  width: 30%;
+  transition-duration: 0.3s;
+  padding-left: 15px;
+}
+
+.manage-spot-delete-button:hover .text {
+  opacity: 1;
+  width: 70%;
+  transition-duration: 0.3s;
+  padding-right: 2px;
+}
+.manage-spot-delete-button:active {
+  transform: translate(2px, 2px);
+}
+
+.manage-single-spot:hover {
+  border: 1px solid black;
+  box-shadow: none;
+  transform: translateY(-5px);
+  transition: 300ms ease-in;
+  transform: scale(1.05);
 }
 
 .dim-overlay {
@@ -66,10 +179,48 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 100; 
+  z-index: 100;
   display: none;
 }
 
 .dim-overlay.visible {
   display: block;
+}
+
+.manage-spot-star {
+  color: #e99f4c;
+  padding-right: 3px;
+}
+
+.manage-spot-tooltip {
+  visibility: hidden;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: 2%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.manage-single-spot:hover .manage-spot-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.manage-spot-tooltip::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  margin-left: -10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
 }

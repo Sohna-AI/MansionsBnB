@@ -484,15 +484,7 @@ router.get('/:spotId/reviews', async (req, res) => {
       },
     ],
   });
-  if (!reviews.length) {
-    return res.status(404).json({
-      title: 'Spot reviews',
-      message: 'Spot has not been reviewed',
-      errors: {
-        message: 'Spot does not have any reviews',
-      },
-    });
-  }
+
   const responseReviews = await reviews.map((review) => {
     const { ...reviewData } = review.toJSON();
     return {

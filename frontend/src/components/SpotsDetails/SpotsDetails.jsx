@@ -25,7 +25,8 @@ const SpotsDetails = () => {
 
       try {
         await dispatch(getSpotById(spotId));
-        await dispatch(getReviewsBySpotId(spotId));
+
+        dispatch(getReviewsBySpotId(spotId));
 
         setIsLoaded(true);
       } catch (error) {
