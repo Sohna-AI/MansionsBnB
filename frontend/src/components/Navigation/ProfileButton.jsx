@@ -54,7 +54,11 @@ const ProfileButton = ({ user }) => {
               <li className="profile-dropdown-user-info-container">
                 <div className="profile-dropdown-user-info">
                   <span className="profile-dropdown-username">Hello, {user.username}</span>
-                  <div className="profile-dropdown-email">{user.email}</div>
+                  <div className="profile-dropdown-email-container">
+                    <div className='profile-dropdown-email'>
+                    {user.email}
+                    </div>
+                  </div>
                 </div>
               </li>
               <li className="profile-dropdown-manage-spots-container">

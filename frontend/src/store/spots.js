@@ -34,7 +34,6 @@ export const getSpotById = (spotId) => async (dispatch) => {
 
   if (res.ok) {
     const spot = await res.json();
-    console.log(spot);
     dispatch(addOneSpot(spot));
     return spot;
   }
@@ -99,8 +98,8 @@ const spotsReducer = (state = initialState, action) => {
         allSpots[spot.id] = spot;
       });
       return {
-        ...allSpots,
         ...state,
+        ...allSpots,
         list: sortList(action.list.Spots),
       };
     }
@@ -108,7 +107,7 @@ const spotsReducer = (state = initialState, action) => {
       if (!state[action.spot.id]) {
         const newState = {
           ...state,
-          [action.spot.id]: action.spot,
+          [action.spot.id]: { ...action.spot },
         };
 
         const spotList = newState.list.map((id) => newState[id]);
@@ -119,7 +118,7 @@ const spotsReducer = (state = initialState, action) => {
 
       const newSpot = {
         ...state,
-        [action.spot.id]: action.spot,
+        [action.spot.id]: { ...action.spot },
       };
 
       return newSpot;

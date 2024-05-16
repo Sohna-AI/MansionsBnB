@@ -4,6 +4,7 @@ import { IoStar } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import { deleteSpot, getSpots } from '../../store/spots';
 import DeleteSpot from '../DeleteSpot/DeleteSpot';
+
 import './ManageSpots.css';
 
 const ManageSpots = () => {
@@ -48,6 +49,11 @@ const ManageSpots = () => {
     <>
       <main className="manage-spots">
         <h1>Manage Your Spots</h1>
+        {!userSpots.length && (
+          <NavLink to="/spots/new">
+            <button className="create-spot-button">Create a spot</button>
+          </NavLink>
+        )}
         <div className="manage-spots-page-container">
           <ul className="manage-spots-page">
             {userSpots.map((spot) => (

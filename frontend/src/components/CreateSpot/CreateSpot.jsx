@@ -436,7 +436,7 @@ const CreateSpot = () => {
                     <br />
                   </div>
                   <div className="create-spot-button-container">
-                    <button type="submit" className="create-spot-button">
+                    <button type="submit" className="create-spot-button" style={{ cursor: 'pointer' }}>
                       Create Spot
                     </button>
                   </div>
