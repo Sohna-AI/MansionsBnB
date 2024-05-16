@@ -202,3 +202,14 @@
 .dim-overlay.visible {
   display: block;
 }
+
+.spot-detail-star {
+  color: #e99f4c;
+  padding-right: 3px;
+}
+
+.spot-detail-review-stars {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

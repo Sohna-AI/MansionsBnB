@@ -9,6 +9,14 @@ import DateDisplay from './DateDisplay';
 import CreateReviews from '../CreateReviews/CreateReviews';
 import DeleteSpot from '../DeleteSpot/DeleteSpot';
 
+const StarRating = ({ rating }) => {
+  const filledStars = [];
+  for (let i = 0; i < 5; i++) {
+    filledStars.push(<IoStar key={i} color={i < rating ? '#e99f4c' : 'gray'} size={20}/>);
+  }
+  return <div>{filledStars}</div>;
+};
+
 const SpotsDetails = () => {
   const dispatch = useDispatch();
   const { spotId } = useParams();
@@ -172,7 +180,7 @@ const SpotsDetails = () => {
                         </span>
                         <div className="spot-detail-avg-rating-container">
                           <span className="spot-detail-avg-rating">
-                            <IoStar />
+                            <IoStar className="spot-detail-star" />
                             {avgRating(spot.avgRating)}
                             {numReview(spot.numReviews)}
                           </span>
@@ -188,7 +196,7 @@ const SpotsDetails = () => {
         </div>
         <footer className="spot-details-reviews-section">
           <h3 className="reviews-section-avg-num-reviews">
-            <IoStar />
+            <IoStar className="spot-detail-star" />
             {avgRating(spot.avgRating)} {numReview(spot.numReviews)}
           </h3>
           {renderPostReviewButton() && (
@@ -203,8 +211,12 @@ const SpotsDetails = () => {
             {reviewsArr.map((review) => (
               <li key={review.id} className="review-section-comment">
                 <div className="review-section-user">
-                  <p>{review.User?.firstName}</p>
-                  <DateDisplay dateString={review.updatedAt.split(' ')[0]} />
+                  <p style={{fontWeight: 700}}>{review.User?.firstName}</p>
+                  <div style={{fontWeight: 300}}><DateDisplay dateString={review.updatedAt.split(' ')[0]} /></div>
+                  <div className="spot-detail-review-stars">
+                    <p style={{fontWeight: 500}}>Rated: <span style={{fontWeight: 700, fontSize: 16}}>{review.stars}</span></p>
+                    <StarRating rating={review.stars} />
+                  </div>
                 </div>
                 <p>{review.reviewData}</p>
                 {sessionUser && sessionUser.id === review.userId && (
