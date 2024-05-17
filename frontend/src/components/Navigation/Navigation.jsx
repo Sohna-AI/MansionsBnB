@@ -18,11 +18,20 @@ const Navigation = ({ isLoaded }) => {
   return (
     <div className="nav-container">
       <ul className="nav-links">
-        <li>
-          <NavLink to="/">
-            <img src={logo} className="logo-image" />
-          </NavLink>
-        </li>
+        {isLoggedIn && (
+          <li>
+            <NavLink to="/spots">
+              <img src={logo} className="logo-image" />
+            </NavLink>
+          </li>
+        )}
+        {!isLoggedIn && (
+          <li>
+            <NavLink to="/">
+              <img src={logo} className="logo-image" />
+            </NavLink>
+          </li>
+        )}
         {isLoggedIn && isLoaded && (
           <li className="create-spot">
             <NavLink to="/spots/new">

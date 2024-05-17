@@ -18,19 +18,19 @@ const SignupFormModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validations = {};
-    if (!email) validations.email = 'Email is required';
-    if (username.length < 4) validations.username = 'Username must be at least 4 characters';
-    if (!firstName) validations.firstName = 'First name is required';
-    if (!lastName) validations.lastName = 'Last name is required';
-    if (!password || password.length < 6) validations.password = 'Password must be at least 6 characters';
-    if (password !== confirmPassword)
-      validations.confirmPassword = 'Confirm password filed must be the same as password field';
+    // const validations = {};
+    // if (!email) validations.email = 'Email is required';
+    // if (username.length < 4) validations.username = 'Username must be at least 4 characters';
+    // if (!firstName) validations.firstName = 'First name is required';
+    // if (!lastName) validations.lastName = 'Last name is required';
+    // if (!password || password.length < 6) validations.password = 'Password must be at least 6 characters';
+    // if (password !== confirmPassword)
+    //   validations.confirmPassword = 'Confirm password filed must be the same as password field';
 
-    if (Object.keys(validations).length > 0) {
-      setErrors(validations);
-      return;
-    }
+    // if (Object.keys(validations).length > 0) {
+    //   setErrors(validations);
+    //   return;
+    // }
     if (password === confirmPassword) {
       setErrors({});
       dispatch(

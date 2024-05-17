@@ -114,4 +114,5 @@
   color: black;
   background-color: #eddcd9;
   box-shadow: none;
+  cursor: not-allowed;
 }

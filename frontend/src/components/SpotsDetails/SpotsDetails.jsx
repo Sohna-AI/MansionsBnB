@@ -12,7 +12,7 @@ import DeleteSpot from '../DeleteSpot/DeleteSpot';
 const StarRating = ({ rating }) => {
   const filledStars = [];
   for (let i = 0; i < 5; i++) {
-    filledStars.push(<IoStar key={i} color={i < rating ? '#e99f4c' : 'gray'} size={20}/>);
+    filledStars.push(<IoStar key={i} color={i < rating ? '#e99f4c' : 'gray'} size={20} />);
   }
   return <div>{filledStars}</div>;
 };
@@ -131,6 +131,10 @@ const SpotsDetails = () => {
   const handleCloseReviewModal = () => {
     setReviewModalOpen(false);
   };
+
+  const handleReserveClick = () => {
+    window.alert('Feature coming soon');
+  };
   if (!isLoaded || !spot || !reviewsArray) {
     return <div>Loading...</div>;
   }
@@ -186,7 +190,9 @@ const SpotsDetails = () => {
                           </span>
                         </div>
                       </div>
-                      <button className="reserve-button">Reserve</button>
+                      <button className="reserve-button" onClick={handleReserveClick}>
+                        Reserve
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -211,10 +217,14 @@ const SpotsDetails = () => {
             {reviewsArr.map((review) => (
               <li key={review.id} className="review-section-comment">
                 <div className="review-section-user">
-                  <p style={{fontWeight: 700}}>{review.User?.firstName}</p>
-                  <div style={{fontWeight: 300}}><DateDisplay dateString={review.updatedAt.split(' ')[0]} /></div>
+                  <p style={{ fontWeight: 700 }}>{review.User?.firstName}</p>
+                  <div style={{ fontWeight: 300 }}>
+                    <DateDisplay dateString={review.updatedAt.split(' ')[0]} />
+                  </div>
                   <div className="spot-detail-review-stars">
-                    <p style={{fontWeight: 500}}>Rated: <span style={{fontWeight: 700, fontSize: 16}}>{review.stars}</span></p>
+                    <p style={{ fontWeight: 500 }}>
+                      Rated: <span style={{ fontWeight: 700, fontSize: 16 }}>{review.stars}</span>
+                    </p>
                     <StarRating rating={review.stars} />
                   </div>
                 </div>
