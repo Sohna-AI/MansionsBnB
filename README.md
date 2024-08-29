@@ -1,8 +1,8 @@
 # `MansionsBnB`
 
-```
+
 MansionsBnB is a clone of AirBnB. MansionsBnB will help you find the best venue for your wedding, family parties or vacation.
-```
+
 
 ## `Technologies Used`
 
